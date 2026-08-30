@@ -7,10 +7,11 @@ const AuthProvider = ({ children }) => {
 
     const [token, setToken] = useState(tokenStorage ? tokenStorage : null);
     const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {
-        if (tokenStorage) {
+        if (token) {
             try {
             const response = await api.get("/auth/me");
             setUser(response.data.user);
@@ -20,9 +21,10 @@ const AuthProvider = ({ children }) => {
             setUser(null);
             }
         }
+            setIsLoading(false);
         };
         fetchUser();
-    }, []);
+    }, [token]);
 
     const login = async (email, password) => {
         try {
@@ -41,20 +43,21 @@ const AuthProvider = ({ children }) => {
         throw error;
         }
     };
-
+    
     const logout = async () => {
-        try {
+      try {
         await api.post("/auth/logout");
+      } catch (error) {
+        console.error(error);
+      } finally {
         localStorage.removeItem("token");
-
         setToken(null);
         setUser(null);
-        } catch (error) {
-        throw error;
-        }
+      }
     };
+    
     return (
-        <AuthContext.Provider value={{ user, token, login, logout }}>
+        <AuthContext.Provider value={{ user, token, login, logout ,isLoading }}>
         {children}
         </AuthContext.Provider>
     );
