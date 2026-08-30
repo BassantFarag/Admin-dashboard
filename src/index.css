@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* ---Light Mode --- */
+  --color-bg-main: #f8f8f6;        /* main bg */
+  --color-card-bg: #ffffff;        /* Sidebar & cards bg */
+  --color-input-bg: #f0f0ed;       /* inputs & Search */
+  --color-text-primary: #1a1b1d;   /* main text */
+  --color-text-secondary: #5a5955; /* secondary text & icons */
+  --color-brand-active: #b88322;   /* active elements & buttons */
+  --color-brand-hover: #d9a441;    /* hover status */
+  --color-active-bg: #fcf4e4;      /* active link background */
+  --color-border-main: #e5e5e0;    /* borders & dividers */
+  --color-disabled: #d4d3ce;       /* disabled state */
+
+  /* --- Statuses & Badges --- */
+  --color-status-success: #10b981; 
+  --color-status-warning: #f59e0b; 
+  --color-status-danger: #c6604f;  
+  --color-status-info: #3b82f6;    
+
+  /* --- Dark Mode --- */
+  &.dark {
+    --color-bg-main: #0d0e10;        /* main bg */
+    --color-card-bg: #161719;        /* Sidebar & cards bg */
+    --color-input-bg: #1a1b1d;       /* inputs & Search */
+    --color-text-primary: #f2f2f0;   /* main text */
+    --color-text-secondary: #c9c8c3; /* secondary text & icons */
+    --color-brand-active: #e3b158;   /* active text & icons */
+    --color-brand-hover: #d9a441;    /* hover status */
+    --color-active-bg: #332813;      /* active item background */
+    --color-border-main: #2a2b2e;    /* borders & dividers */
+    --color-disabled: #3a3b3e;       /* disabled state */
+
+    /* --- Statuses & Badges --- */
+    --color-status-success: #34d399;
+    --color-status-danger: #c6604f;
+    --color-status-warning: #fbbf24;
+    --color-status-info: #60a5fa;
+  }
+}
+
+/* to use in Tailwind v4 */
+@theme {
+  --color-bg-main: var(--color-bg-main);
+  --color-card: var(--color-card-bg);
+  --color-input: var(--color-input-bg);
+  --color-primary: var(--color-text-primary);
+  --color-secondary: var(--color-text-secondary);
+  --color-active: var(--color-brand-active);
+  --color-active-hover: var(--color-brand-hover);
+  --color-active-bg: var(--color-active-bg);
+  --color-border-custom: var(--color-border-main);
+  --color-disabled: var(--color-disabled);
+  
+  /* --- Statuses & Badges --- */
+  --color-success: var(--color-status-success);
+  --color-warning: var(--color-status-warning);
+  --color-danger: var(--color-status-danger);
+  --color-info: var(--color-status-info);
+
+  /* font family */
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
