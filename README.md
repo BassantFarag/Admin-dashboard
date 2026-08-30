@@ -29,9 +29,3 @@ A modern, fully responsive Admin Dashboard built using **React**, **Vite**, and 
 ### Prerequisites
 Make sure you have **Node.js** installed on your machine.
 
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/BassantFarag/Admin-dashboard.git](https://github.com/BassantFarag/Admin-dashboard.git)
-   cd Admin-dashboard
