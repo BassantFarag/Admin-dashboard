@@ -1,16 +1,37 @@
-# React + Vite
+# 🚀 Admin Dashboard Panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, fully responsive Admin Dashboard built using **React**, **Vite**, and **Tailwind CSS**. Designed with dynamic layout structure, custom dark/light theme switching, and seamless mobile drawer navigation.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+- **Responsive Layout:** Adaptive design with custom mobile sidebar drawer (`MenuMobile`).
+- **Dynamic Theming:** Smooth Dark and Light mode toggling using CSS variables and Tailwind.
+- **Modern Navigation:** Configured routes with `react-router-dom` and active link styling.
+- **Custom UI Components:** Reusable headers, user profiles, and dynamic UI elements.
+- **Icons:** Built with `lucide-react` for crisp visual elements.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Framework:** React.js (via Vite)
+- **Styling:** Tailwind CSS
+- **Routing:** React Router DOM
+- **Icons:** Lucide React
+- **Typography:** Plus Jakarta Sans
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+Make sure you have **Node.js** installed on your machine.
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/BassantFarag/Admin-dashboard.git](https://github.com/BassantFarag/Admin-dashboard.git)
+   cd Admin-dashboard
