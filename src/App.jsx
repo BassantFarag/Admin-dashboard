@@ -3,7 +3,7 @@ import DashboardLayout from './layouts/DashboardLayout'
 import { RouterProvider } from 'react-router-dom';
 import {router} from './routes/Router'
 import AuthContext from './contexts/AuthContext';
-import Loading from './pages/Loading';
+import Loading from './components/Loading';
 
 const App = () => {
   const { isLoading } = useContext(AuthContext);
