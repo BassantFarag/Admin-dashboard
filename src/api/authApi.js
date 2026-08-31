@@ -8,7 +8,7 @@ export const login=(payload) => {
 
 //logout
 export const logout=() => {
-  return api.post('/auth/logout', payload);
+  return api.post('/auth/logout');
 };
 
 //auth me 
