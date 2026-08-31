@@ -1,5 +1,5 @@
-function StatusBadge({ status }) {
-
+function StatusBadge({ status = "pending" }) {
+  const normalizedStatus = status?.toLowerCase() || "pending";
   const statusStyles = {
     delivered: "bg-emerald-50 text-emerald-600 border-emerald-200",
     shipped: "bg-cyan-50 text-cyan-600 border-cyan-200",
@@ -11,8 +11,8 @@ function StatusBadge({ status }) {
 
   return (
     <span
-      className={`px-3 py-1 rounded-full text-xs font-medium border inline-flex items-center gap-1.5 ${
-        statusStyles[status] || "bg-gray-50 text-gray-600 border-gray-200"
+      className={`px-2.5 py-1 rounded-full text-xs font-semibold border inline-flex items-center gap-1.5 capitalize transition-colors ${
+        statusStyles[normalizedStatus] || "bg-secondary/10 text-secondary border-secondary/20"
       }`}
     >
       <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
