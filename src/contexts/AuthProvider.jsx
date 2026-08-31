@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
           setIsLoading(false); 
         }
       } else {
-        setIsLoading(false); 
+          setIsLoading(false); 
       }
     };
 
