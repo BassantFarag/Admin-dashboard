@@ -9,11 +9,11 @@ function OrdersFilters({
   setCardFilter,
 }) {
   return (
-    <div className="bg-white rounded-xl shadow p-4">
+    <div className="rounded-xl border border-border-custom p-4 bg-card shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4">
 
         <div className="relative flex-1 min-w-[280px]">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-secondary">
             <svg
               className="w-4 h-4"
               fill="none"
@@ -32,18 +32,19 @@ function OrdersFilters({
           <input
             type="text"
             placeholder="Search ID, customer..."
-            className="w-full pl-9 pr-4 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+           className="w-full rounded-lg border border-border-custom bg-input py-2 pl-9 pr-4 text-sm text-primary placeholder:text-secondary focus:border-active focus:outline-none"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
+        {/* Dropdowns */}
         <div className="flex flex-wrap items-center gap-3">
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-700"
+            className="rounded-lg border border-border-custom bg-input px-4 py-2 text-sm text-primary focus:border-active focus:outline-none"
           >
             <option value="all">All statuses</option>
             <option value="delivered">Delivered</option>
@@ -57,7 +58,7 @@ function OrdersFilters({
           <select
             value={paymentFilter}
             onChange={(e) => setPaymentFilter(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-700"
+            className="rounded-lg border border-border-custom bg-input px-4 py-2 text-sm text-primary focus:border-active focus:outline-none"
           >
             <option value="all">All payments</option>
             <option value="paid">Paid</option>
@@ -67,7 +68,7 @@ function OrdersFilters({
           <select
             value={cardFilter}
             onChange={(e) => setCardFilter(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-700"
+            className="rounded-lg border border-border-custom bg-input px-4 py-2 text-sm text-primary focus:border-active focus:outline-none"
           >
             <option value="all">All methods</option>
             <option value="card">Card</option>
