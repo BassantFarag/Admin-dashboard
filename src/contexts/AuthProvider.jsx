@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { login as loginApi, logout as logoutApi, authMe } from "../api/authApi";
 import AuthContext from "./AuthContext";
-import api from "../api/axios";
+
 
 const AuthProvider = ({ children }) => {
   const tokenStorage = localStorage.getItem("token");
@@ -12,29 +13,28 @@ const AuthProvider = ({ children }) => {
   // Verify the stored token and restore the authenticated user on initial load.
   useEffect(() => {
     const fetchUser = async () => {
-      if (tokenStorage) {
+      if (token) {
         try {
-          const response = await api.get("/auth/me");
+          const response = await authMe();
           setUser(response.data.user);
         } catch {
           localStorage.removeItem("token");
           setToken(null);
           setUser(null);
+        } finally {
+          setIsLoading(false); 
         }
+      } else {
+        setIsLoading(false); 
       }
-
-      setIsLoading(false);
     };
 
     fetchUser();
-  }, [tokenStorage]);
+  }, []); 
 
   // Authenticate the user and store the token and user data.
   const login = async (email, password) => {
-    const response = await api.post("/auth/login", {
-      email,
-      password,
-    });
+    const response = await loginApi({ email, password });
 
     localStorage.setItem("token", response.data.token);
     setToken(response.data.token);
@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
   // Log out the user and clear the authentication state.
   const logout = async () => {
     try {
-      await api.post("/auth/logout");
+      await logoutApi();
     } catch (error) {
       console.error(error);
     } finally {
