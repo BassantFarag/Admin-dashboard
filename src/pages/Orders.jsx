@@ -77,7 +77,7 @@ const Orders = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[--color-bg-main] space-y-6 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-[--color-bg-main] space-y-6 p-4  lg:p-6">
 
       <HeaderTable orders={orders} />
 

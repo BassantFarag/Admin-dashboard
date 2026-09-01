@@ -1,23 +1,24 @@
 import StatusBadge from "./StatusBadge";
-import { PackageX , User } from "lucide-react";
+import { PackageX, User } from "lucide-react";
+
 function OrdersTable({ orders = [] }) {
   return (
-    <div className="rounded-xl shadow-sm border border-border-custom bg-card overflow-hidden">
+    <div className="rounded-2xl shadow-xl border border-border-custom bg-card/80 overflow-hidden backdrop-blur-md">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
-
+          {/* Header Gradient */}
           <thead>
-            <tr className="border-b border-border-custom text-secondary text-xs font-semibold uppercase tracking-wider">
+            <tr className="border-b border-border-custom bg-gradient-to-r from-input/60 via-input/30 to-input/60 text-secondary text-[11px] font-bold uppercase tracking-wider">
               <th className="py-4 px-6">Order</th>
               <th className="py-4 px-6">Customer</th>
               <th className="py-4 px-6">Date</th>
               <th className="py-4 px-6">Status</th>
               <th className="py-4 px-6">Payment</th>
-              <th className="py-4 px-6">Total</th>
+              <th className="py-4 px-6 text-right">Total</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-border-custom text-sm text-secondary">
+          <tbody className="divide-y divide-border-custom/50 text-sm">
             {orders.length > 0 ? (
               orders.map((order) => {
                 const customerName =
@@ -25,84 +26,94 @@ function OrdersTable({ orders = [] }) {
                   order.shippingAddress?.fullName ||
                   order.customerName ||
                   "Unknown User";
-                
-                return(
-                <tr key={order._id} className="hover:bg-input transition-colors">
+
+                return (
+                  /* Row Hover with Subtle Gradient */
+                  <tr
+                    key={order._id}
+                    className="hover:bg-gradient-to-r hover:from-amber-500/[0.04] hover:via-amber-500/[0.02] hover:to-transparent transition-all duration-300 group"
+                  >
                     {/* Order ID */}
-                  <td className="py-4 px-6 font-medium text-primary">
-                    #{order._id ? order._id.slice(-8).toUpperCase() : "—"}
-                  </td>
+                    <td className="py-4 px-6 font-mono text-xs font-semibold text-primary/90 tracking-wider">
+                      #{order._id ? order._id.slice(-8).toUpperCase() : "—"}
+                    </td>
 
-                  {/* Customer Name & Avatar */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-3">
-                      {/*Avatar */}
-                      <div className="w-8 h-8 rounded-full bg-input border border-border-custom flex items-center justify-center text-primary font-semibold text-xs uppercase">
-                            {customerName !== "Unknown User" ? (
-                              customerName.charAt(0)
-                              ) : ( <User className="w-4 h-4 text-secondary" /> )}
+                    {/* Customer Name & Gradient Avatar */}
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-3 max-w-[220px]">
+                        {/* Avatar with Vibrant Gradient Background */}
+                        <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-amber-500/20 via-orange-500/15 to-amber-400/20 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-xs uppercase shadow-xs group-hover:scale-105 transition-transform duration-300">
+                          {customerName !== "Unknown User" ? (
+                            customerName.charAt(0)
+                          ) : (
+                            <User className="w-4 h-4 text-amber-400/80" />
+                          )}
                         </div>
-                                 
-                    
-                         {/* Customer Name */}
-                      <div className="font-medium text-primary capitalize">
-                          {customerName}
-                      </div>
 
-                    </div>
-                  </td>
-                  {/* Date */}
-                  <td className="py-4 px-6 text-secondary">
-                    {order.createdAt
+                        {/* Customer Name */}
+                        <div
+                          className="font-medium text-primary capitalize line-clamp-1 group-hover:text-amber-400 transition-colors"
+                          title={customerName}
+                        >
+                          {customerName}
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Date */}
+                    <td className="py-4 px-6 text-xs text-secondary whitespace-nowrap">
+                      {order.createdAt
                         ? new Date(order.createdAt).toLocaleDateString("en-GB", {
                             day: "2-digit",
                             month: "short",
                             year: "numeric",
                           })
                         : "—"}
-                  </td>
+                    </td>
 
-                  {/* Status Badge */}
-                  <td className="py-4 px-6">
-                    <StatusBadge status={order.status} />
-                  </td>
+                    {/* Status Badge */}
+                    <td className="py-4 px-6">
+                      <StatusBadge status={order.status} />
+                    </td>
 
-                  {/* Payment Status & Method */}
-                  <td className="py-4 px-6">
-                      <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-500 uppercase">
-                        {order.paymentStatus || "PENDING"}
-                      </span>
-                      <div className="text-xs text-secondary capitalize">
-                        {order.paymentMethod || "Cash"}
+                    {/* Payment Status with Gradient Badge */}
+                    <td className="py-4 px-6">
+                      <div className="flex flex-col items-start gap-1">
+                        <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-gradient-to-r from-amber-500/15 to-amber-600/10 text-amber-400 border border-amber-500/20 uppercase tracking-wider">
+                          {order.paymentStatus || "PENDING"}
+                        </span>
+                        <span className="text-xs text-secondary capitalize pl-0.5">
+                          {order.paymentMethod || "Cash"}
+                        </span>
                       </div>
                     </td>
 
-                  <td className="py-4 px-6 font-semibold text-primary">
+                    {/* Total Price */}
+                    <td className="py-4 px-6 text-right font-semibold text-primary font-mono whitespace-nowrap">
                       {Number(order.totalPrice || 0).toLocaleString("en-US", {
-                       minimumFractionDigits: 2,
-                       })}{" "}
-                          EGP
-                  </td>
-
-                </tr>);
-                })
+                        minimumFractionDigits: 2,
+                      })}{" "}
+                      <span className="text-xs font-sans text-secondary ml-0.5">EGP</span>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
-             <tr>
-              <td colSpan="6" className="py-12 text-center">
-                <div className="flex flex-col items-center justify-center gap-2">
-                  <PackageX className="w-10 h-10 text-secondary/50 stroke-[1.5]" />
-                  <p className="text-sm font-medium text-primary">
-                    No orders found
-                  </p>
-                  <p className="text-xs text-secondary">
-                    There are no matching orders to display right now.
-                  </p>
-                 </div>
-              </td>
-            </tr>
+              <tr>
+                <td colSpan="6" className="py-16 text-center">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <PackageX className="w-12 h-12 text-secondary/40 stroke-[1.5]" />
+                    <p className="text-base font-semibold text-primary">
+                      No orders found
+                    </p>
+                    <p className="text-xs text-secondary">
+                      There are no matching orders to display right now.
+                    </p>
+                  </div>
+                </td>
+              </tr>
             )}
           </tbody>
-
         </table>
       </div>
     </div>
