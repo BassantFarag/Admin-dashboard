@@ -4,7 +4,6 @@ import OrdersFilter from "../components/OrdersFilters";
 import HeaderTable from "../components/HeaderTable";
 import { getAllOrders } from "../api/OrdersApi";
 import Pagination from "../components/Pagination";
-import "../index.css";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -23,7 +22,7 @@ const Orders = () => {
       .then((res) => {
         console.log("Orders:", res.data);
 
-        setOrders(res.data.orders || res.data);
+        setOrders(res.data.orders || res.data || []);
         setLoading(false);
       })
       .catch((err) => {
@@ -32,6 +31,7 @@ const Orders = () => {
       });
   }, []);
 
+  //filteration
   const filteredOrders = orders.filter((order) => {
     const searchValue = search.toLowerCase();
 
@@ -57,14 +57,17 @@ const Orders = () => {
         cardFilter.toLowerCase();
 
     return (
-      matchesSearch &&
-      matchesStatus &&
-      matchesPayment &&
-      matchesMethod
+      matchesSearch && matchesStatus && matchesPayment && matchesMethod
     );
   });
 
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  //to return to main page 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter, paymentFilter, cardFilter]);
+
+  //Pagination
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage) || 1;
 
   const startIndex = (currentPage - 1) * ordersPerPage;
 
@@ -72,10 +75,6 @@ const Orders = () => {
     startIndex,
     startIndex + ordersPerPage
   );
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="min-h-screen bg-[--color-bg-main] space-y-6 p-4 sm:p-6 lg:p-8">
@@ -93,13 +92,15 @@ const Orders = () => {
         setCardFilter={setCardFilter}
       />
 
-      <OrdersTable orders={currentOrders} />
+      <OrdersTable orders={currentOrders}  loading={loading} />
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
-      />
+      {filteredOrders.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
 
     </div>
   );
