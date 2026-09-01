@@ -1,5 +1,6 @@
 
 function HeaderTable({ orders }) {
+    const totalOrders=orders.length|| 0;
   return (
    
    <div className="flex flex-wrap items-end justify-between gap-4">
@@ -9,7 +10,7 @@ function HeaderTable({ orders }) {
     </div>
     <div className="flex items-center gap-2 rounded-xl border border-border-custom bg-card px-4 py-2.5">
         <span className="text-2xl font-bold tabular-nums text-primary">
-            {orders?.total ?? 0}
+            {totalOrders}
         </span>
         <span className="text-xs text-secondary">total orders</span>
          </div>
