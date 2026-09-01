@@ -1,142 +1,64 @@
-
-import {
-  ShoppingCart,
-  Clock3,
-  CircleDollarSign,
-  ChartColumn,
-  Package,
-  Users,
-} from "lucide-react";
+import { ShoppingCart, Clock3, CircleDollarSign, ChartColumn, Package, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import api from "../api/axios";
+
 
 const Dashboard = () => {
-  // ================= DEFAULT DATA =================
-  const defaultDashboard = {
+
+  const [dashboard, setDashboard] = useState({
     orders: {
-      total: 169,
-      pending: 11,
+      total: 0,
+      pending: 0,
+      processing: 0,
+      confirmed: 0,
+      shipped: 0,
+      delivered: 0,
+      cancelled: 0,
     },
 
     revenue: {
-      total: 24580,
-      thisMonth: 4280,
+      total: 0,
+      thisMonth: 0,
+      lastMonth: 0,
+      growthPercent: 0,
     },
 
-    totalCustomers: 1250,
+    recentOrders: [],
 
-    ordersByStatus: [
-      {
-        _id: "pending",
-        count: 11,
-      },
-      {
-        _id: "processing",
-        count: 24,
-      },
-      {
-        _id: "confirmed",
-        count: 31,
-      },
-      {
-        _id: "shipped",
-        count: 42,
-      },
-      {
-        _id: "delivered",
-        count: 50,
-      },
-      {
-        _id: "cancelled",
-        count: 11,
-      },
-    ],
+    topProducts: [],
 
-    topProducts: [
-      {
-        _id: "1",
-        name: "Wireless Headphones",
-        totalSold: 120,
-        revenue: 7200,
-      },
-      {
-        _id: "2",
-        name: "Smart Watch",
-        totalSold: 95,
-        revenue: 5700,
-      },
-      {
-        _id: "3",
-        name: "Gaming Mouse",
-        totalSold: 80,
-        revenue: 3200,
-      },
-    ],
+    ordersByStatus: [],
 
-    recentOrders: [
-      {
-        id: "1",
-        customer: "Ahmed Mohamed",
-        details: "Wireless Headphones × 2",
-        date: "Today, 10:30 AM",
-        status: "delivered",
-        amount: 120,
-      },
-      {
-        id: "2",
-        customer: "Sara Ali",
-        details: "Smart Watch × 1",
-        date: "Today, 09:15 AM",
-        status: "processing",
-        amount: 250,
-      },
-      {
-        id: "3",
-        customer: "Omar Hassan",
-        details: "Gaming Mouse × 2",
-        date: "Yesterday, 06:40 PM",
-        status: "pending",
-        amount: 80,
-      },
-      {
-        id: "4",
-        customer: "Mona Ahmed",
-        details: "Keyboard × 1",
-        date: "Yesterday, 03:20 PM",
-        status: "shipped",
-        amount: 150,
-      },
-    ],
-  };
+    dailyRevenue: [],
 
-  const [dashboard, setDashboard] = useState(defaultDashboard);
+    totalCustomers: 0,
+  });
 
-  // ================= API =================
   useEffect(() => {
     const getDashboard = async () => {
       try {
-        const response = await axios.get(
-          "https://e-commerce-api-3wara.vercel.app/orders/admin/dashboard"
-        );
+        const response = await api.get("/orders/admin/dashboard");
 
         if (response.data?.dashboard) {
           setDashboard(response.data.dashboard);
         }
-      } catch {
-  console.log("Dashboard data could not be loaded");
-}
+      } catch (error) {
+        console.log(
+          "Dashboard Error:",
+          error.response?.data || error.message
+        );
+      }
     };
 
     getDashboard();
   }, []);
 
-  // ================= STATS =================
   const stats = [
     {
       id: 1,
       title: "Total Orders",
-      value: dashboard.orders.total.toLocaleString(),
+      value: dashboard.orders?.total?.toLocaleString(),
       subText: "All orders received",
       icon: ShoppingCart,
     },
@@ -144,7 +66,7 @@ const Dashboard = () => {
     {
       id: 2,
       title: "Pending Orders",
-      value: dashboard.orders.pending.toLocaleString(),
+      value: dashboard.orders?.pending?.toLocaleString(),
       subText: "Awaiting action",
       icon: Clock3,
     },
@@ -152,7 +74,7 @@ const Dashboard = () => {
     {
       id: 3,
       title: "Revenue",
-      value: `$${dashboard.revenue.total.toLocaleString()}`,
+      value: `$${dashboard.revenue?.total?.toLocaleString()}`,
       subText: "Total gross revenue",
       icon: CircleDollarSign,
     },
@@ -160,7 +82,7 @@ const Dashboard = () => {
     {
       id: 4,
       title: "This Month",
-      value: `$${dashboard.revenue.thisMonth.toLocaleString()}`,
+      value: `$${dashboard.revenue?.thisMonth?.toLocaleString()}`,
       subText: "Monthly sales target",
       icon: ChartColumn,
     },
@@ -168,9 +90,8 @@ const Dashboard = () => {
     {
       id: 5,
       title: "Top Product",
-      value:
-        dashboard.topProducts[0]?.name || "No products",
-      subText: dashboard.topProducts[0]
+      value: dashboard.topProducts?.[0]?.name || "No products",
+      subText: dashboard.topProducts?.[0]
         ? `${dashboard.topProducts[0].totalSold} sold`
         : "No sales yet",
       icon: Package,
@@ -179,34 +100,24 @@ const Dashboard = () => {
     {
       id: 6,
       title: "Users",
-      value: dashboard.totalCustomers.toLocaleString(),
+      value: dashboard.totalCustomers?.toLocaleString(),
       subText: "Registered customers",
       icon: Users,
     },
   ];
 
-  // ================= STATUS COLORS =================
+  ///////////////////////////////////////////////////////
+
   const statusClasses = {
-    pending:
-      "bg-warning/10 text-warning border-warning/20",
-
-    processing:
-      "bg-info/10 text-info border-info/20",
-
-    confirmed:
-      "bg-info/10 text-info border-info/20",
-
-    shipped:
-      "bg-info/10 text-info border-info/20",
-
-    delivered:
-      "bg-success/10 text-success border-success/20",
-
-    cancelled:
-      "bg-danger/10 text-danger border-danger/20",
+    pending: "bg-warning/10 text-warning border-warning/20",
+    processing: "bg-info/10 text-info border-info/20",
+    confirmed: "bg-info/10 text-info border-info/20",
+    shipped: "bg-info/10 text-info border-info/20",
+    delivered: "bg-success/10 text-success border-success/20",
+    cancelled: "bg-danger/10 text-danger border-danger/20",
   };
 
-  // ================= ANIMATION =================
+  //animation
   const cardVariants = {
     hidden: {
       opacity: 0,
@@ -233,6 +144,65 @@ const Dashboard = () => {
     },
   };
 
+  const formatDate = (date) => {
+    if (!date) return "No date";
+
+    return new Date(date).toLocaleString("en-US", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+  };
+
+  //  CUSTOMER NAME
+  const getCustomerName = (order) => {
+    return (
+      order?.shippingAddress?.fullName ||
+      "Unknown Customer"
+    );
+  };
+
+ 
+  const getOrderDetails = (order) => {
+    if (!order?.items?.length) {
+      return "No products";
+    }
+
+    return order.items
+      .map(
+        (item) =>
+          `${item.name || "Product"} × ${item.quantity || 0}`
+      )
+      .join(", ");
+  };
+/////////////////////////////////////////////////////
+
+  const orderStatuses = [
+    {
+      key: "pending",
+      count: dashboard.orders?.pending ,
+    },
+    {
+      key: "processing",
+      count: dashboard.orders?.processing ,
+    },
+    {
+      key: "confirmed",
+      count: dashboard.orders?.confirmed ,
+    },
+    {
+      key: "shipped",
+      count: dashboard.orders?.shipped ,
+    },
+    {
+      key: "delivered",
+      count: dashboard.orders?.delivered ,
+    },
+    {
+      key: "cancelled",
+      count: dashboard.orders?.cancelled ,
+    },
+  ];
+
   return (
     <motion.main
       initial="hidden"
@@ -242,7 +212,9 @@ const Dashboard = () => {
     >
       <div className="mx-auto w-full max-w-[1600px] space-y-7 lg:space-y-8">
 
-        {/* ================= HEADER ================= */}
+
+
+
         <motion.section variants={cardVariants}>
           <div className="relative overflow-hidden rounded-2xl border border-border-custom bg-card px-4 py-5 shadow-sm transition-all duration-300 hover:shadow-md sm:px-6 sm:py-6 lg:px-7 lg:py-7">
 
@@ -267,7 +239,7 @@ const Dashboard = () => {
           </div>
         </motion.section>
 
-        {/* ================= STATS ================= */}
+         
         <motion.section
           variants={containerVariants}
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3"
@@ -340,14 +312,14 @@ const Dashboard = () => {
           })}
         </motion.section>
 
-        {/* ================= ORDER STATUS + TOP PRODUCTS ================= */}
+      
         <section className="grid grid-cols-1 gap-6 xl:grid-cols-12">
 
-          {/* ORDER STATUS */}
-          <motion.div
-            variants={cardVariants}
-            className="rounded-2xl border border-border-custom bg-card p-5 shadow-sm transition-shadow duration-300 hover:shadow-md sm:p-6 xl:col-span-7"
-          >
+          
+        <motion.div
+  variants={cardVariants}
+  className="min-h-[400px] rounded-2xl border border-border-custom bg-card p-5 shadow-sm transition-shadow duration-300 hover:shadow-md sm:min-h-[500px] sm:p-6 xl:min-h-[600px] xl:col-span-7"
+>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
@@ -371,50 +343,53 @@ const Dashboard = () => {
 
             <motion.div
               variants={containerVariants}
-              className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3"
+              className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 "
             >
 
-              {dashboard.ordersByStatus.map((status) => (
-                <motion.div
-                  key={status._id}
-                  variants={cardVariants}
-                  whileHover={{
-                    scale: 1.02,
-                  }}
-                  className={`rounded-xl border p-4 transition-shadow duration-300 hover:shadow-sm ${
-                    statusClasses[status._id] ||
-                    "bg-main text-primary border-border-custom"
-                  }`}
-                >
+              {orderStatuses.map((status) => {
 
-                  <div className="flex items-center justify-between gap-2">
+                const percentage =
+                  dashboard.orders?.total > 0
+                    ? Math.round(
+                        (status.count / dashboard.orders.total) * 100
+                      )
+                    : 0;
 
-                    <span className="truncate text-[10px] font-bold uppercase tracking-wider sm:text-[11px]">
-                      {status._id}
-                    </span>
+                return (
+                  <motion.div
+                    key={status.key}
+                    variants={cardVariants}
+                    whileHover={{
+                      scale: 1.02,
+                    }}
+                    className={`rounded-xl border p-4 transition-shadow duration-300 hover:shadow-sm ${
+                      statusClasses[status.key]
+                    }`}
+                  >
 
-                    <span className="text-[10px] font-semibold opacity-60">
-                      {Math.round(
-                        (status.count /
-                          dashboard.orders.total) *
-                          100
-                      )}
-                      %
-                    </span>
+                    <div className="flex items-center justify-between gap-2">
 
-                  </div>
+                      <span className="truncate text-[10px] font-bold uppercase tracking-wider sm:text-[11px]">
+                        {status.key}
+                      </span>
 
-                  <p className="mt-3 text-2xl font-black sm:text-3xl">
-                    {status.count}
-                  </p>
+                      <span className="text-[10px] font-semibold opacity-60">
+                        {percentage}%
+                      </span>
 
-                </motion.div>
-              ))}
+                    </div>
+
+                    <p className="mt-3 text-2xl font-black sm:text-3xl">
+                      {status.count}
+                    </p>
+
+                  </motion.div>
+                );
+              })}
 
             </motion.div>
           </motion.div>
 
-          {/* TOP PRODUCTS */}
           <motion.div
             variants={cardVariants}
             className="rounded-2xl border border-border-custom bg-card p-5 shadow-sm transition-shadow duration-300 hover:shadow-md sm:p-6 xl:col-span-5"
@@ -434,10 +409,7 @@ const Dashboard = () => {
 
               </div>
 
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-active-bg text-active">
-                <Package size={18} />
-              </div>
-
+          
             </div>
 
             <motion.div
@@ -445,50 +417,69 @@ const Dashboard = () => {
               className="mt-5 space-y-2.5"
             >
 
-              {dashboard.topProducts.map((product, index) => (
-                <motion.div
-                  key={product._id}
-                  variants={cardVariants}
-                  whileHover={{
-                    x: 4,
-                  }}
-                  className="flex min-w-0 items-center gap-3 rounded-xl border border-border-custom/60 bg-main/40 p-3 transition-all duration-300 hover:border-active/40 hover:bg-active-bg/40"
-                >
+              {dashboard.topProducts?.length > 0 ? (
 
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-active/20 bg-active-bg text-xs font-bold text-active">
-                    {index + 1}
-                  </div>
+                dashboard.topProducts.map((product, index) => (
 
-                  <div className="min-w-0 flex-1">
+                  <motion.div
+                    key={product._id}
+                    variants={cardVariants}
+                    whileHover={{
+                      x: 4,
+                    }}
+                    className="flex min-w-0 items-center gap-3 rounded-xl border border-border-custom/60 bg-main/40 p-3 transition-all duration-300 hover:border-active/40 hover:bg-active-bg/40"
+                  >
 
-                    <p className="truncate text-xs font-semibold text-primary sm:text-sm">
-                      {product.name}
-                    </p>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-active/20 bg-active-bg text-xs font-bold text-active">
+                      {index + 1}
+                    </div>
 
-                    <p className="mt-1 truncate text-[10px] text-secondary sm:text-[11px]">
-                      {product.totalSold} units sold · $
-                      {product.revenue.toLocaleString()}
-                    </p>
+                    <div className="min-w-0 flex-1">
 
-                  </div>
+                      <p className="truncate text-xs font-semibold text-primary sm:text-sm">
+                        {product.name || "Unknown Product"}
+                      </p>
 
-                  <span className="hidden shrink-0 text-xs font-bold text-active md:block">
-                    ${product.revenue.toLocaleString()}
-                  </span>
+                      <p className="mt-1 truncate text-[10px] text-secondary sm:text-[11px]">
+                        {product.totalSold } units sold · $
+                        {(product.revenue ).toLocaleString()}
+                      </p>
 
-                </motion.div>
-              ))}
+                    </div> 
+
+                    <span className="hidden shrink-0 text-xs font-bold text-active md:block">
+                      ${(product.revenue || 0).toLocaleString()}
+                    </span>
+
+                  </motion.div>
+
+                ))
+
+              ) : (
+
+                <div className="rounded-xl border border-border-custom/60 bg-main/30 p-5 text-center">
+
+                  <p className="text-xs font-semibold text-secondary">
+                    No products available
+                  </p>
+
+                  <p className="mt-1 text-[10px] text-secondary/70">
+                    No sales data yet
+                  </p>
+
+                </div>
+
+              )}
 
             </motion.div>
           </motion.div>
 
         </section>
 
-        {/* ================= RECENT ORDERS ================= */}
+ 
         <motion.section variants={cardVariants}>
 
-          <div className="rounded-2xl border border-border-custom bg-card p-5 shadow-sm transition-shadow duration-300 hover:shadow-md sm:p-6">
-
+       <div className="min-h-[400px] rounded-2xl border border-border-custom bg-card p-5 shadow-sm transition-shadow duration-300 hover:shadow-md sm:min-h-[450px] sm:p-6 xl:min-h-[500px]">
             <div className="mb-5 flex items-center justify-between gap-3">
 
               <div className="min-w-0">
@@ -504,7 +495,7 @@ const Dashboard = () => {
               </div>
 
               <span className="shrink-0 rounded-lg border border-active/20 bg-active-bg px-2.5 py-1.5 text-[10px] font-semibold text-active sm:px-3 sm:text-xs">
-                {dashboard.recentOrders.length} orders
+                {dashboard.recentOrders?.length || 0} orders
               </span>
 
             </div>
@@ -514,63 +505,88 @@ const Dashboard = () => {
               className="space-y-3"
             >
 
-              {dashboard.recentOrders.map((order) => (
-                <motion.div
-                  key={order.id}
-                  variants={cardVariants}
-                  whileHover={{
-                    x: 3,
-                  }}
-                  className="rounded-xl border border-border-custom/60 bg-main/30 p-3.5 transition-all duration-300 hover:border-active/40 hover:bg-active-bg/30 sm:p-4"
-                >
+              {dashboard.recentOrders?.length > 0 ? (
 
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                dashboard.recentOrders.map((order) => {
 
-                    <div className="min-w-0 flex-1">
+                  const statusKey = order?.status
+                    ?.toLowerCase()
+                    ?.trim();
 
-                      <div className="flex items-center gap-2">
+                  return (
+                    <motion.div
+                      key={order._id}
+                      variants={cardVariants}
+                      whileHover={{
+                        x: 3,
+                      }}
+                      className="rounded-xl border border-border-custom/60 bg-main/30 p-3.5 transition-all duration-300 hover:border-active/40 hover:bg-active-bg/30 sm:p-4"
+                    >
 
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-active-bg text-active">
-                          <Users size={15} />
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+                        <div className="min-w-0 flex-1">
+
+                          <div className="flex items-center gap-2">
+
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-active-bg text-active">
+                              <Users size={15} />
+                            </div>
+
+                            <p className="text-xs font-bold text-primary sm:text-sm">
+                              {getCustomerName(order)}
+                            </p>
+
+                          </div>
+
+                          <p className="mt-2 line-clamp-2 text-[10px] leading-4 text-secondary sm:text-[11px]">
+                            {getOrderDetails(order)}
+                          </p>
+
+                          <p className="mt-1 text-[10px] text-secondary/80">
+                            {formatDate(order.createdAt)}
+                          </p>
+
                         </div>
 
-                        <p className="text-xs font-bold text-primary sm:text-sm">
-                          {order.customer}
-                        </p>
+                        <div className="flex items-center justify-between gap-3 border-t border-border-custom/50 pt-3 sm:border-0 sm:pt-0">
+
+                          <span
+                            className={`rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide sm:text-[10px] ${
+                              statusClasses[statusKey] ||
+                              "bg-main text-primary border-border-custom"
+                            }`}
+                          >
+                            {statusKey || "unknown"}
+                          </span>
+
+                          <span className="text-xs font-extrabold text-primary sm:text-sm">
+                            ${(order.totalPrice || 0).toLocaleString()}
+                          </span>
+
+                        </div>
 
                       </div>
 
-                      <p className="mt-2 line-clamp-2 text-[10px] leading-4 text-secondary sm:text-[11px]">
-                        {order.details}
-                      </p>
+                    </motion.div>
+                  );
+                })
 
-                      <p className="mt-1 text-[10px] text-secondary/80">
-                        {order.date}
-                      </p>
+              ) : (
 
-                    </div>
+                <div className="rounded-xl border border-border-custom/60 bg-main/30 p-6 text-center">
 
-                    <div className="flex items-center justify-between gap-3 border-t border-border-custom/50 pt-3 sm:border-0 sm:pt-0">
+                  <p className="text-xs font-semibold text-secondary">
+                    No recent orders
+                  </p>
 
-                      <span
-                        className={`rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide sm:text-[10px] ${
-                          statusClasses[order.status] ||
-                          "bg-main text-primary border-border-custom"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
+                  <p className="mt-1 text-[10px] text-secondary/70">
+                    No customer activity yet
+                  </p>
 
-                      <span className="text-xs font-extrabold text-primary sm:text-sm">
-                        ${order.amount}
-                      </span>
+                </div>
 
-                    </div>
-
-                  </div>
-
-                </motion.div>
-              ))}
+              )}
 
             </motion.div>
 
@@ -584,4 +600,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
