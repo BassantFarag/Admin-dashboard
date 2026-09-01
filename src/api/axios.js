@@ -1,36 +1,39 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://e-commerce-api-3wara.vercel.app', 
+ baseURL: 'https://e-commerce-api-3wara.vercel.app',     
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true
+  withCredentials: true,
 });
-
 
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)
 );
 
 api.interceptors.response.use(
-  (response)=>response,
+  (response) => response,
   (error) => {
-    if(error.response.status=== 401){
-      localStorage.removeItem("token")
-      if(!window.location.pathname.startsWith('login')){
-        window.history.replaceState(null,"","/login")
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+
+      if (!window.location.pathname.startsWith('/login')) {
+        window.history.replaceState(null, '', '/login');
       }
     }
-    return Promise.reject(error)
+
+    return Promise.reject(error);
   }
-)
+);
 
 export default api;
