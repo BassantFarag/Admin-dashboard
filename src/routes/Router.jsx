@@ -8,6 +8,7 @@ import AddProduct from '../pages/AddProduct';
 import Orders from '../pages/Orders';
 import Carts from '../pages/Carts';
 import Settings from '../pages/Settings';
+import ProductView from './pages/ProductView';
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
       { path: 'users', element: <Users /> },
       { path: 'products', element: <Products /> },
       { path: 'add-product', element: <AddProduct /> },
+      { path: 'products/:id', element: <ProductView /> },
       { path: 'orders', element: <Orders /> },
       { path: 'carts', element: <Carts /> },
       { path: 'settings', element: <Settings /> },
