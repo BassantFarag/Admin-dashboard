@@ -367,17 +367,18 @@ const ItemCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
         </div>
 
         <div className="action-bar">
-          <button className="view-btn">👁 View</button>
-          <button className="edit-btn">✏️ Edit</button>
-          <button className="quick-btn" onClick={() => onQuickEdit(item)}>⚡ Quick Edit</button>
-          <button 
-            className="del-btn" 
-            onClick={() => onDelete(item._id || item.id)}
-            disabled={isDeleting}
-          >
-            🗑 {isDeleting ? 'Deleting...' : 'Delete'}
-          </button>
-        </div>
+  <button className="view-btn">👁 View</button>
+  {/* ربط زرار Edit بفتح الـ Popup مباشرة */}
+  <button className="edit-btn" onClick={() => onQuickEdit(item)}>✏️ Edit</button>
+  <button className="quick-btn" onClick={() => onQuickEdit(item)}>⚡ Quick Edit</button>
+  <button 
+    className="del-btn" 
+    onClick={() => onDelete(item._id || item.id)}
+    disabled={isDeleting}
+  >
+    🗑 {isDeleting ? 'Deleting...' : 'Delete'}
+  </button>
+</div>
       </div>
     </div>
   );
