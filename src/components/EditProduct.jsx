@@ -37,20 +37,21 @@ const EditProduct = ({ id }) => {
 
   // Mark to remove
   const toggleRemoveImage = (type, index) => {
-    const imageId = `${type}-${index}`;
-
-    setImagesToRemove((prev) => {
-      if (prev.includes(imageId)) {
-        return prev.filter((id) => id !== imageId);
-      }
-
-      return [...prev, imageId];
-    });
-  };
+  if (type === "existing") {
+    const imageId = `existing-${index}`;
+    setImagesToRemove((prev) =>
+      prev.includes(imageId)
+        ? prev.filter((id) => id !== imageId)
+        : [...prev, imageId]
+    );
+  } else {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  }
+};
 
   return (
     <div className="w-full min-w-0">
-      <section className="flex flex-col w-1/2 min-w-0 min-h-screen bg-card border-bg-main space-y-6 p-4 sm:p-6 rounded-3xl sm:rounded-4xl shadow-xl">
+      <section className="flex flex-col w-full min-w-0 bg-card border-bg-main space-y-6 p-4 sm:p-6 rounded-3xl sm:rounded-4xl shadow-xl">
 
         {/* Header */}
         <div className="flex gap-3 sm:gap-4 items-start">
@@ -112,40 +113,35 @@ const EditProduct = ({ id }) => {
             })}
 
             {images.map((image, index) => {
-              const imageId = `new-${index}`;
-              const markedForRemove = imagesToRemove.includes(imageId);
+  const previewUrl = URL.createObjectURL(image);
 
-              return (
-                <article
-                  key={`new-${index}`}
-                  className="min-w-0 group relative bg-black rounded-2xl border border-border-custom shadow-sm overflow-hidden"
-                >
+  return (
+    <article
+      key={`new-${index}`}
+      className="min-w-0 group relative bg-black rounded-2xl border border-border-custom shadow-sm overflow-hidden"
+    >
+      <div className="h-48 w-full sm:h-64 md:h-80 bg-card">
+        <img
+          src={previewUrl}
+          alt={`New Image ${index + 1}`}
+          className="h-full w-full object-cover"
+        />
+      </div>
 
-                  <div className="h-48 w-full sm:h-64 md:h-80 bg-card">
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt={`New Image ${index + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
+      <button
+        type="button"
+        onClick={() => toggleRemoveImage("new", index)}
+        className="absolute top-2 right-2 sm:top-4 sm:right-4 cursor-pointer p-1.5 sm:p-2 rounded-full shadow-md bg-card text-red-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-red-500 hover:text-white"
+      >
+        <Trash2 size={16} className="sm:size-4" />
+      </button>
 
-                  <button
-                    type="button"
-                    onClick={() => toggleRemoveImage("new", index)}
-                    className={`absolute top-2 right-2 sm:top-4 sm:right-4 cursor-pointer p-1.5 sm:p-2 rounded-full shadow-md transition-opacity duration-500 ${markedForRemove ? "bg-red-500 text-white opacity-100" : "bg-card text-red-400 opacity-0 group-hover:opacity-100"}`}
-                  >
-                    <Trash2 size={16} className="sm:size-4" />
-                  </button>
-
-                  {/* image label */}
-                  <div className="px-2 sm:px-4 py-3 text-[10px] sm:text-xs uppercase text-secondary tracking-[0.15em] sm:tracking-[0.25em] truncate">
-                    {markedForRemove
-                      ? "Mark to remove"
-                      : `Image ${existingImages.length + index + 1}`}
-                  </div>
-                </article>
-              );
-            })}
+      <div className="px-2 sm:px-4 py-3 text-[10px] sm:text-xs uppercase text-secondary tracking-[0.15em] sm:tracking-[0.25em] truncate">
+        {`New Image ${existingImages.length + index + 1}`}
+      </div>
+    </article>
+  );
+})}
           </div>
         </div>
 
