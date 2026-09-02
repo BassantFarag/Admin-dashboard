@@ -1,21 +1,21 @@
-import api from './axios'
+import api from "./axios";
 
-
-//login
-export const login=(payload) => {
-  return api.post('/auth/login', payload);
+// Login
+export const login = (payload) => {
+  return api.post("/auth/login", payload);
 };
 
-//logout
-export const logout=() => {
-  return api.post('/auth/logout');
+// Logout
+export const logout = () => {
+  return api.post("/auth/logout");
 };
 
-//auth me 
-export const authMe=()=>api.get('/auth/me');
+// Get current authenticated user
+export const authMe = () => api.get("/auth/me");
 
-//auth admin text 
-export const adminTest=()=>api.get('/auth/admin-test')
+// Test admin access
+export const adminTest = () => api.get("/auth/admin-test");
 
-//change role 
-export const changeRole =(payload) => api.patch('/auth/change-role' , payload)
+// Change user role
+export const changeRole = (payload) =>
+  api.patch("/auth/change-role", payload);
