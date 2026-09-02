@@ -106,7 +106,6 @@ const Dashboard = () => {
     },
   ];
 
-  ///////////////////////////////////////////////////////
 
   const statusClasses = {
     pending: "bg-warning/10 text-warning border-warning/20",
@@ -174,7 +173,7 @@ const Dashboard = () => {
       )
       .join(", ");
   };
-/////////////////////////////////////////////////////
+
 
   const orderStatuses = [
     {
