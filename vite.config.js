@@ -7,5 +7,15 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
- 
+
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://e-commerce-api-3wara.vercel.app',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })
