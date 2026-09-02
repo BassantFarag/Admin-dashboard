@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Eye, Tag, Folder, Star } from "lucide-react";
+import { ArrowLeft, Eye, Tag, Folder } from "lucide-react";
 import { getProductById } from "../api/productApi";
 
 const ProductView = () => {
@@ -8,6 +8,7 @@ const ProductView = () => {
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -40,7 +41,7 @@ const ProductView = () => {
       <div className="p-6">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm text-[#8A8A8A] dark:text-[#9A9A9A] hover:opacity-70 transition-opacity mb-4"
+          className="flex items-center gap-2 text-sm text-[#8A8A8A] dark:text-[#9A9A9A] hover:opacity-70 transition-opacity mb-4 cursor-pointer"
         >
           <ArrowLeft size={15} />
           Back
@@ -60,7 +61,7 @@ const ProductView = () => {
       <div className="px-6 pt-4 pb-2 border-b border-[#ECECEC] dark:border-[#2A2A2A]">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm text-[#8A8A8A] dark:text-[#9A9A9A] hover:opacity-70 transition-opacity"
+          className="flex items-center gap-2 text-sm text-[#8A8A8A] dark:text-[#9A9A9A] hover:opacity-70 transition-opacity cursor-pointer"
         >
           <ArrowLeft size={15} />
           Back
@@ -78,19 +79,27 @@ const ProductView = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-6 px-6 pb-6 max-w-6xl mx-auto">
+        {/* Gallery Section */}
         <div>
-          <div className="rounded-xl overflow-hidden bg-black">
+          <div className="rounded-xl overflow-hidden bg-black border border-[#ECECEC] dark:border-[#2A2A2A]">
             <img
-              src={images[0]}
-              alt="Product"
-              className="w-full h-[420px] object-cover"
+              src={images[selectedImageIndex] || images[0]}
+              alt={product.name || "Product"}
+              className="w-full h-[420px] object-cover transition-all duration-300"
             />
           </div>
-          <div className="flex gap-3 mt-5 mb-3">
+
+          {/* Thumbnails */}
+          <div className="flex gap-3 mt-5 mb-3 overflow-x-auto pb-2">
             {images.map((src, i) => (
               <button
                 key={i}
-                className="w-24 h-20 rounded-lg overflow-hidden border-2 border-transparent first:border-[#B8935A] dark:first:border-[#D6B77A] transition-colors"
+                onClick={() => setSelectedImageIndex(i)}
+                className={`w-24 h-20 shrink-0 rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${
+                  selectedImageIndex === i
+                    ? "border-[#B8935A] dark:border-[#D6B77A]"
+                    : "border-transparent opacity-70 hover:opacity-100"
+                }`}
               >
                 <img src={src} alt="" className="w-full h-full object-cover" />
               </button>
@@ -98,6 +107,7 @@ const ProductView = () => {
           </div>
         </div>
 
+        {/* Details Section */}
         <div className="space-y-4">
           <div className="rounded-xl p-5 bg-white border border-[#ECECEC] dark:bg-[#212121] dark:border-[#2A2A2A]">
             <p className="text-[16px] tracking-wide font-medium mb-1 text-[#593e15] dark:text-[#D6B77A]">
@@ -105,7 +115,7 @@ const ProductView = () => {
             </p>
             <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
             <p className="text-sm leading-relaxed text-[#555] dark:text-[#C7C7C7]">
-              {product.description}
+              {product.description || "No description provided."}
             </p>
           </div>
 
@@ -114,7 +124,7 @@ const ProductView = () => {
               <p className="text-[11px] tracking-wide mb-1 text-[#9A9A9A] dark:text-[#8A8A8A]">
                 Price
               </p>
-              <p className="font-semibold">${product.price}</p>
+              <p className="font-semibold">${product.price ?? 0}</p>
             </div>
             <div className="rounded-xl p-4 bg-white border border-[#ECECEC] dark:bg-[#212121] dark:border-[#2A2A2A]">
               <p className="text-[11px] tracking-wide mb-1 text-[#9A9A9A] dark:text-[#8A8A8A]">
@@ -126,7 +136,7 @@ const ProductView = () => {
               <p className="text-[11px] tracking-wide mb-1 text-[#9A9A9A] dark:text-[#8A8A8A]">
                 Stock
               </p>
-              <p className="font-semibold">{product.stock}</p>
+              <p className="font-semibold">{product.stock ?? 0}</p>
             </div>
             <div className="rounded-xl p-4 bg-white border border-[#ECECEC] dark:bg-[#212121] dark:border-[#2A2A2A]">
               <p className="text-[11px] tracking-wide mb-1 text-[#9A9A9A] dark:text-[#8A8A8A]">
@@ -145,12 +155,12 @@ const ProductView = () => {
                 </p>
               </div>
               <div className="flex gap-2 flex-wrap">
-                {product.tags.map((tag) => (
+                {product.tags.map((tag, idx) => (
                   <span
-                    key={tag}
+                    key={typeof tag === "string" ? tag : idx}
                     className="text-xs px-3 py-1 rounded-full bg-[#F5EFE0] text-[#8A6B2E] dark:bg-[#2A2A2A] dark:text-[#D6B77A]"
                   >
-                    #{tag}
+                    #{typeof tag === "object" ? tag.name : tag}
                   </span>
                 ))}
               </div>
@@ -166,7 +176,7 @@ const ProductView = () => {
                 </p>
               </div>
               <p className="text-sm text-[#555] dark:text-[#C7C7C7]">
-                {product.category}
+                {typeof product.category === "object" ? product.category.name : product.category}
               </p>
             </div>
           )}
