@@ -1,13 +1,14 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../contexts/AuthContext";
+import Loading from "../components/Loading"
 
 const ProtectedRoute = () => {
   const { token, isLoading } = useContext(AuthContext);
   const location = useLocation();
 
   if (isLoading) {
-    return null;
+    return <Loading />;
   }
 
   if (!token) {
