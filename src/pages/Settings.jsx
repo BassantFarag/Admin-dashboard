@@ -28,15 +28,26 @@ const SettingsContent = () => {
   const setIsDark = contextSetIsDark ?? setLocalIsDark;
 
   const [user] = useState(mockUser);
-  const [prefs, setPrefs] = useState(defaultPrefs);
+  const [prefs, setPrefs] = useState(() => {
+  const saved = localStorage.getItem("user_prefs");
+  return saved ? JSON.parse(saved) : defaultPrefs;
+});
 
   const handleToggle = (key) => {
-    setPrefs((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  setPrefs((prev) => {
+    const updated = { ...prev, [key]: !prev[key] };
+    localStorage.setItem("user_prefs", JSON.stringify(updated));
+    return updated;
+  });
+};
 
   const handleSelectChange = (key, value) => {
-    setPrefs((prev) => ({ ...prev, [key]: value }));
-  };
+  setPrefs((prev) => {
+    const updated = { ...prev, [key]: value };
+    localStorage.setItem("user_prefs", JSON.stringify(updated));
+    return updated;
+  });
+};
 
   const handleDarkModeToggle = () => {
     const next = !isDark;
