@@ -1,18 +1,21 @@
-import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ClipboardList, 
-  ShoppingCart, 
-  Users, 
-  Settings, 
-  LogOut ,
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import AuthContext from '../contexts/AuthContext';
+
+import {
+  LayoutDashboard,
+  Package,
+  ClipboardList,
+  ShoppingCart,
+  Users,
+  Settings,
+  LogOut,
   Plus,
   Home
 } from 'lucide-react';
-
-
  const Sidebar = ()=>{
+  const { logout } = useContext(AuthContext);
+const navigate = useNavigate();
 // Links  
   const navLinks = [
     { name: 'Dashboard', path: '/', icon: Home},
@@ -24,15 +27,10 @@ import {
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
  
-
-//دا لغيت اما اهندل ال token
-  const handleLogout = () => {
-    localStorage.removeItem('token'); 
-    localStorage.removeItem('user');
-
-    navigate('/login');
-  }; 
-
+const handleLogout = async () => {
+  await logout();
+  navigate('/login', { replace: true });
+};
   return (
     <aside className=" hidden w-64 min-h-screen bg-card border-r border-border-custom  flex-col p-6 transition-colors duration-200 md:flex ">
       

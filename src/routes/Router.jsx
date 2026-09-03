@@ -12,21 +12,73 @@ import ProductView from "../pages/ProductView";
 
 export const router = createBrowserRouter([
   {
-    path: '/login',
-    element: <Login />, 
+    path: "/login",
+    element: <Login />,
   },
+
   {
-    path: '/',
-    element: <DashboardLayout />, 
+    element: <ProtectedRoute />,
     children: [
-      { index: true, element: <Dashboard /> },
-      { path: 'users', element: <Users /> },
-      { path: 'products', element: <Products /> },
-      { path: 'add-product', element: <AddProduct /> },
-      { path: 'products/:id', element: <ProductView /> },
-      { path: 'orders', element: <Orders /> },
-      { path: 'carts', element: <Carts /> },
-      { path: 'settings', element: <Settings /> },
+      {
+        element: <AdminRoute />,
+        children: [
+          {
+            path: "/",
+            element: <DashboardLayout />,
+            children: [
+              {
+                index: true,
+                element: <Dashboard />,
+              },
+              {
+                path: "users",
+                element: <Users />,
+              },
+              {
+                path: "products",
+                element: <Products />,
+              },
+              {
+                path: "add-product",
+                element: <AddProduct />,
+              },
+              {
+                path: "products/:id",
+                element: <ProductView />,
+              },
+              {
+                path: "orders",
+                element: <Orders />,
+              },
+              {
+                path: "carts",
+                element: <Carts />,
+              },
+              {
+                path: "settings",
+                element: <Settings />,
+              },
+            ],
+          },
+        ],
+      },
     ],
+  },
+
+  {
+    path: "/unauthorized",
+    element: (
+      <div className="flex min-h-screen items-center justify-center bg-bg-main px-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-primary">
+            Access Denied
+          </h1>
+
+          <p className="mt-2 text-sm text-secondary">
+            You do not have permission to access this page.
+          </p>
+        </div>
+      </div>
+    ),
   },
 ]);
