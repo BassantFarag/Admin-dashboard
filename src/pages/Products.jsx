@@ -1,4 +1,4 @@
-import React from 'react'
+
 
 const Products = () => {
   return (
@@ -7,3 +7,6 @@ const Products = () => {
 }
 
 export default Products
+
+import React from 'react';
+
