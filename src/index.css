@@ -64,3 +64,19 @@
   /* font family */
   --font-sans: 'Plus Jakarta Sans', sans-serif;
 }
+
+/* react-loading-skeleton theme styling */
+.react-loading-skeleton {
+  --base-color: #ebeae6;
+  --highlight-color: #f7f7f5;
+}
+
+.dark .react-loading-skeleton {
+  --base-color: #1e1f23;
+  --highlight-color: #2c2d33;
+}
+
+::selection {
+  background-color: var(--color-brand-active);
+  color: var(--color-bg-main);
+}
