@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProductHeader from '../components/ProductHeader';
-import ProductForm from '../components/ProductForm';
+import ProductForm from '../components/EditProductForm';
 
 export default function EditProductPage() {
   const [isDark, setisDark] = useState(() => 
