@@ -12,6 +12,18 @@ export default function ProductForm({ formData, setFormData, tags, isDark , onSu
     isDark ? 'text-[#c9c8c3]' : 'text-[#3a3b3e]'
   }`;
 
+  const handleNumberChange = (field, value) => {
+    setFormData({
+      ...formData,
+      [field]: value === '' ? '' : Number(value)
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (onSubmit) onSubmit();
+  };
+  
   return (
     <div className={`lg:col-span-2 rounded-2xl p-6 flex flex-col gap-6 justify-between transition-all duration-300 ${
       isDark ? 'bg-[#161719] border border-[#2a2b2e]' : 'bg-[#faf9f5] border border-[#e3b158]/50'
