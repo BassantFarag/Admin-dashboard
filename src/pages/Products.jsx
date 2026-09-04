@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getProducts, searchProducts, updateProduct, deleteProduct } from '../api/productApi';
+import Loading from '../components/Loading';
+import { useNavigate } from 'react-router-dom';
 
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80';
 
@@ -77,7 +79,7 @@ const EditPopup = ({ item, onClose, onSave, isSaving }) => {
         <div className="flex justify-between items-center px-6 py-4 border-b border-[#232733]">
           <div className="flex items-center gap-2.5">
             <span className="w-2 h-2 bg-[#f9fdff] rounded-full"></span>
-            <h2 className="text-base font-semibold text-white m-0">Edit Product</h2>
+            <h2 className="text-base font-semibold text-white m-0">Quick Edit Product</h2>
           </div>
           <button onClick={onClose} disabled={isSaving} className="bg-[#1a1d26] border border-[#282d3c] text-[#8b949e] w-7 h-7 rounded-md flex items-center justify-center text-sm hover:text-white hover:bg-[#252a38] transition-colors">
             ✕
@@ -204,7 +206,10 @@ const EditPopup = ({ item, onClose, onSave, isSaving }) => {
 };
 
 const ItemCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
+  const navigate = useNavigate(); // تم إضافة useNavigate هنا لحل المشكلة
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const productId = item._id || item.id;
 
   const getImagesList = () => {
     if (Array.isArray(item.images) && item.images.length > 0) return item.images;
@@ -253,10 +258,10 @@ const ItemCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
           ))}
         </div>
         <div className="flex gap-2 mt-auto">
-          <button className="flex-1 py-2 border border-[#282d3c] rounded-lg text-xs font-semibold bg-[#1a1d26] text-[#8b949e] transition-all duration-200 hover:bg-[#252a38] hover:text-white hover:border-[#f9fdff]">👁 View</button>
-          <button onClick={() => onQuickEdit(item)} className="flex-1 py-2 border border-[#282d3c] rounded-lg text-xs font-semibold bg-[#1a1d26] text-[#8b949e] transition-all duration-200 hover:bg-[#252a38] hover:text-white hover:border-[#f9fdff]">✏️ Edit</button>
+          <button className="flex-1 py-2 border border-[#282d3c] rounded-lg text-xs font-semibold bg-[#1a1d26] text-[#8b949e] transition-all duration-200 hover:bg-[#252a38] hover:text-white hover:border-[#f9fdff]" onClick={() => navigate(`/products/${productId}`)}>👁 View</button>
+          <button className="flex-1 py-2 border border-[#282d3c] rounded-lg text-xs font-semibold bg-[#1a1d26] text-[#8b949e] transition-all duration-200 hover:bg-[#252a38] hover:text-white hover:border-[#f9fdff]" onClick={() => navigate(`/products/edit/${productId}`)}>✏️ Edit</button>
           <button onClick={() => onQuickEdit(item)} className="flex-1 py-2 border border-[#282d3c] rounded-lg text-xs font-semibold bg-[#1a1d26] text-[#8b949e] transition-all duration-200 hover:bg-[#252a38] hover:text-white hover:border-[#f9fdff]">⚡ Quick Edit</button>
-          <button onClick={() => onDelete(item._id || item.id)} disabled={isDeleting} className="flex-1 py-2 border border-[#ef4444]/20 rounded-lg text-xs font-semibold bg-[#ef4444]/10 text-[#ef4444] transition-all duration-200 hover:bg-[#ef4444]/20 hover:border-[#f9fdff]">
+          <button onClick={() => onDelete(productId)} disabled={isDeleting} className="flex-1 py-2 border border-[#ef4444]/20 rounded-lg text-xs font-semibold bg-[#ef4444]/10 text-[#ef4444] transition-all duration-200 hover:bg-[#ef4444]/20 hover:border-[#f9fdff]">
             🗑 {isDeleting ? 'Deleting...' : 'Delete'}
           </button>
         </div>
@@ -266,6 +271,7 @@ const ItemCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
 };
 
 const Products = () => {
+  const navigate = useNavigate();
   const [allItems, setAllItems] = useState([]);
   const [shownItems, setShownItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -398,7 +404,10 @@ const Products = () => {
             <h1 className="text-3xl font-extrabold text-white mt-0.5">Products</h1>
           </div>
         </div>
-        <button className="bg-[#1a1d26] text-white border border-[#2d3345] py-2.5 px-5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-[#252a38] hover:border-[#f9fdff] transition-all">
+        <button 
+          onClick={() => navigate('/products/add')}
+          className="bg-[#1a1d26] text-white border border-[#2d3345] py-2.5 px-5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-[#252a38] hover:border-[#f9fdff] transition-all"
+        >
           + Add Product
         </button>
       </div>

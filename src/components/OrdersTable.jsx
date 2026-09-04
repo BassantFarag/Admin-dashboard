@@ -1,7 +1,42 @@
-import StatusBadge from "./StatusBadge";
+import StatusBadge from "./StatusBadge"; // إعادة تفعيل الـ import
 import { PackageX, User } from "lucide-react";
 
-function OrdersTable({ orders = [] }) {
+// مكون Skeleton مميز بنفس شكل الخطوط الأفقية المدورة
+const SkeletonRow = () => (
+  <tr className="animate-pulse border-b border-border-custom/30">
+    {/* Order ID Skeleton */}
+    <td className="py-5 px-6">
+      <div className="h-3.5 w-24 bg-[#2a2f3d] rounded-full"></div>
+    </td>
+
+    {/* Customer Skeleton */}
+    <td className="py-5 px-6">
+      <div className="h-3.5 w-32 bg-[#2a2f3d] rounded-full"></div>
+    </td>
+
+    {/* Date Skeleton */}
+    <td className="py-5 px-6">
+      <div className="h-3.5 w-20 bg-[#2a2f3d] rounded-full"></div>
+    </td>
+
+    {/* Status Skeleton */}
+    <td className="py-5 px-6">
+      <div className="h-3.5 w-28 bg-[#2a2f3d] rounded-full"></div>
+    </td>
+
+    {/* Payment Skeleton */}
+    <td className="py-5 px-6">
+      <div className="h-3.5 w-24 bg-[#2a2f3d] rounded-full"></div>
+    </td>
+
+    {/* Total Price Skeleton */}
+    <td className="py-5 px-6 flex justify-end">
+      <div className="h-3.5 w-20 bg-[#2a2f3d] rounded-full"></div>
+    </td>
+  </tr>
+);
+
+function OrdersTable({ orders = [], isLoading = false }) {
   return (
     <div className="rounded-2xl shadow-xl border border-border-custom bg-card/80 overflow-hidden backdrop-blur-md">
       <div className="overflow-x-auto">
@@ -19,7 +54,13 @@ function OrdersTable({ orders = [] }) {
           </thead>
 
           <tbody className="divide-y divide-border-custom/50 text-sm">
-            {orders.length > 0 ? (
+            {isLoading ? (
+              // 1. حالة التحميل: عرض الـ Skeleton Rows
+              Array.from({ length: 5 }).map((_, index) => (
+                <SkeletonRow key={index} />
+              ))
+            ) : orders.length > 0 ? (
+              // 2. حالة وجود طلبات: عرض البيانات
               orders.map((order) => {
                 const customerName =
                   order.user?.name ||
@@ -28,7 +69,6 @@ function OrdersTable({ orders = [] }) {
                   "Unknown User";
 
                 return (
-                  /* Row Hover with Subtle Gradient */
                   <tr
                     key={order._id}
                     className="hover:bg-gradient-to-r hover:from-amber-500/[0.04] hover:via-amber-500/[0.02] hover:to-transparent transition-all duration-300 group"
@@ -41,7 +81,6 @@ function OrdersTable({ orders = [] }) {
                     {/* Customer Name & Gradient Avatar */}
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3 max-w-[220px]">
-                        {/* Avatar with Vibrant Gradient Background */}
                         <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-amber-500/20 via-orange-500/15 to-amber-400/20 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-xs uppercase shadow-xs group-hover:scale-105 transition-transform duration-300">
                           {customerName !== "Unknown User" ? (
                             customerName.charAt(0)
@@ -49,8 +88,6 @@ function OrdersTable({ orders = [] }) {
                             <User className="w-4 h-4 text-amber-400/80" />
                           )}
                         </div>
-
-                        {/* Customer Name */}
                         <div
                           className="font-medium text-primary capitalize line-clamp-1 group-hover:text-amber-400 transition-colors"
                           title={customerName}
@@ -76,7 +113,7 @@ function OrdersTable({ orders = [] }) {
                       <StatusBadge status={order.status} />
                     </td>
 
-                    {/* Payment Status with Gradient Badge */}
+                    {/* Payment Status */}
                     <td className="py-4 px-6">
                       <div className="flex flex-col items-start gap-1">
                         <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-gradient-to-r from-amber-500/15 to-amber-600/10 text-amber-400 border border-amber-500/20 uppercase tracking-wider">
@@ -99,6 +136,7 @@ function OrdersTable({ orders = [] }) {
                 );
               })
             ) : (
+              // 3. حالة عدم وجود داتا (No Orders)
               <tr>
                 <td colSpan="6" className="py-16 text-center">
                   <div className="flex flex-col items-center justify-center gap-2">
