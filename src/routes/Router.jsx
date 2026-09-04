@@ -11,6 +11,7 @@ import Orders from "../pages/Orders";
 import Carts from "../pages/Carts";
 import Settings from "../pages/Settings";
 import ProductView from "../pages/ProductView";
+import EditProduct from "../components/EditProduct";
 
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
               {
                 path: "products/:id",
                 element: <ProductView />,
+              },
+              {
+                path: "products/edit/:id",
+                element: <EditProduct />, 
               },
               {
                 path: "orders",
