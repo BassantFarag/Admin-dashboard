@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef ,useNavigate} from 'react';
 import { getProducts, searchProducts, updateProduct, deleteProduct } from '../api/productApi';
+import Loading from '../components/Loading';
 
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80';
 

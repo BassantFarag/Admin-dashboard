@@ -93,7 +93,7 @@ const Orders = () => {
         setCardFilter={setCardFilter}
       />
 
-      <OrdersTable orders={currentOrders}  loading={loading} />
+      <OrdersTable orders={currentOrders}  isLoading={loading} />
 
       {filteredOrders.length > 0 && (
         <Pagination

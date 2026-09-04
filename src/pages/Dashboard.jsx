@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import { ShoppingCart, Clock3, CircleDollarSign, ChartColumn, Package, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -463,5 +462,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-=======
->>>>>>> Stashed changes

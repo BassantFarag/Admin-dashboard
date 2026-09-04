@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X , ArrowBigDown} from 'lucide-react';
 
-const AddProductForm = ({ onSubmitProduct }) => {
+const AddProductForm = ({ onSubmitProduct , onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
@@ -13,13 +13,17 @@ const AddProductForm = ({ onSubmitProduct }) => {
     category: 'electronics',
     subcategory: '',
     brand: '',
-    isFeatured: false,
+     featured: false,
     isActive: true,
   });
 
+  // state for tags
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
 
+
+
+  // handle input changes for form fields
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -28,6 +32,7 @@ const AddProductForm = ({ onSubmitProduct }) => {
     }));
   };
 
+  // handle adding a new tag
   const handleAddTag = (e) => {
     e.preventDefault();
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
@@ -36,18 +41,46 @@ const AddProductForm = ({ onSubmitProduct }) => {
     }
   };
 
+  // handle removing a tag
   const handleRemoveTag = (tagToRemove) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  const handleReset = () => {
+    setFormData({
+      name: '',
+      shortDescription: '',
+      description: '',
+      price: '',
+      discountPrice: '',
+      stock: '',
+      sku: '',
+      category: 'electronics',
+      subcategory: '',
+      brand: '',
+      featured: false,
+      isActive: true,
+    });
+    setTags([]);
+    setTagInput('');
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formDataWithTags = { ...formData, tags };
-    
-    // إرسال البيانات للكومبوننت الأب AddProduct
+
+    const finalProductData = {
+      ...formData,
+      price: Number(formData.price) || 0,
+      discountPrice: Number(formData.discountPrice) || 0,
+      stock: Number(formData.stock) || 0,
+      tags,
+    };
+
     if (onSubmitProduct) {
-      onSubmitProduct(formDataWithTags);
+      onSubmitProduct(finalProductData);
     }
+
+    handleReset();
   };
 
   return (
@@ -143,17 +176,21 @@ const AddProductForm = ({ onSubmitProduct }) => {
 
       {/* Category & Subcategory */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
+        {/*Category  */}
+        <div className="flex flex-col gap-2 relative">
           <label className="text-sm font-medium text-primary">Category</label>
           <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="w-full bg-input border border-border-custom text-primary rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-active transition-colors appearance-none cursor-pointer"
+            className="w-full relative bg-input border border-border-custom text-primary rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-active transition-colors appearance-none cursor-pointer"
           >
             <option value="electronics" className="bg-card text-primary">electronics</option>
+            <option value="phones" className="bg-card text-primary">phones</option>
             <option value="fashion" className="bg-card text-primary">fashion</option>
-            <option value="appliances" className="bg-card text-primary">appliances</option>
+            <option value="home" className="bg-card text-primary">home</option>
+            <option value="beauty" className="bg-card text-primary">beauty</option>
+            <option value="sports" className="bg-card text-primary">sports</option>
           </select>
         </div>
         <div className="flex flex-col gap-2">
@@ -221,8 +258,8 @@ const AddProductForm = ({ onSubmitProduct }) => {
         <label className="flex items-center gap-2 bg-input border border-border-custom px-5 py-3 rounded-2xl cursor-pointer hover:border-active transition-colors">
           <input
             type="checkbox"
-            name="isFeatured"
-            checked={formData.isFeatured}
+             name="featured" 
+             checked={formData.featured}
             onChange={handleChange}
             className="w-4 h-4 rounded accent-active cursor-pointer"
           />
