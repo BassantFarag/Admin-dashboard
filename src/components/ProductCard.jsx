@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-
+import { Star } from 'lucide-react';
+import {useNavigate} from 'react-router-dom';
 const FALLBACK_IMAGE = 'https://placehold.co/600x400/1e293b/94a3b8?text=No+Image+Uploaded';
 
 const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const extractImageUrl = (img) => {
@@ -92,7 +94,7 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
 
         {(item.isFeatured || item.featured) && (
           <span className="absolute top-2.5 left-2.5 bg-active text-bg-main text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow">
-            <img src="../../icons/star_25dp_E3B158_FILL0_wght400_GRAD0_opsz24.png" alt="" /> Featured
+            <Star className="text-black" size={22} /> Featured
           </span>
         )}
 
@@ -162,10 +164,16 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
 
         {/* Actions Grid */}
         <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border-custom">
-          <button className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer">
+          <button
+            onClick={() => navigate(`/products/${item._id || item.id}`)}
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+          >
             👁 View
           </button>
-          <button className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer">
+          <button
+            onClick={() => navigate(`/products/edit/${item._id || item.id}`)}
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+          >
             ✏ Edit
           </button>
           <button
