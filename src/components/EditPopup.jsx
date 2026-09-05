@@ -108,6 +108,11 @@ const EditPopup = ({ item, onClose, onSave, isSaving, isDark = true }) => {
       return;
     }
 
+    if (!formData.subcategory.trim()) {
+      alert('Please enter a subcategory');
+      return;
+    }
+
     const formattedTags =
       typeof formData.tags === 'string'
         ? formData.tags
@@ -129,13 +134,13 @@ const EditPopup = ({ item, onClose, onSave, isSaving, isDark = true }) => {
     data.append('category', formData.category);
     data.append('subcategory', formData.subcategory.trim());
     data.append('brand', formData.brand.trim());
-    if (formattedTags.length > 0) {
-      formattedTags.forEach((tag) => {
-        data.append('tags', tag);
-      });
-    } else {
-      data.append('tags', []);
-    }
+
+    // مهم: لو مفيش تاجز خالص، متبعتش الحقل أصلاً — بعت فاضي كان بيتحول لـ string
+    // وده اللي كان بيسبب "tags must be an array" من السيرفر
+    formattedTags.forEach((tag) => {
+      data.append('tags', tag);
+    });
+
     data.append('featured', String(Boolean(formData.featured)));
     data.append('isActive', String(Boolean(formData.isActive)));
 
@@ -319,12 +324,13 @@ const EditPopup = ({ item, onClose, onSave, isSaving, isDark = true }) => {
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">SUBCATEGORY</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">SUBCATEGORY *</label>
                 <input
                   type="text"
                   name="subcategory"
                   value={formData.subcategory}
                   onChange={handleChange}
+                  placeholder="e.g. smartphones"
                   className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 />
               </div>
@@ -348,6 +354,7 @@ const EditPopup = ({ item, onClose, onSave, isSaving, isDark = true }) => {
                   name="tags"
                   value={formData.tags}
                   onChange={handleChange}
+                  placeholder="tag1, tag2, tag3"
                   className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 />
               </div>
