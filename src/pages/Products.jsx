@@ -4,6 +4,7 @@ import { getProducts, searchProducts, updateProduct, deleteProduct } from '../ap
 import StatsCards from '../components/StatsCards';
 import ProductCard from '../components/ProductCard';
 import EditPopup from '../components/EditPopup';
+import Loading from '../components/Loading';
 
 const Products = () => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const Products = () => {
     }
     try {
       setLoading(true);
-      const response = await searchProducts({ q: searchTerm, query: searchTerm });
+      const response = await searchProducts(searchTerm.trim());
       const data = response?.data?.products || response?.data?.data || response?.data || [];
       const searchResults = Array.isArray(data) ? data : [];
       setAllItems(searchResults);
@@ -168,11 +169,7 @@ const Products = () => {
   };
 
   if (loading && allItems.length === 0) {
-    return (
-      <div className="p-8 min-h-screen bg-bg-main text-secondary text-center flex items-center justify-center">
-        Loading products...
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error) {
