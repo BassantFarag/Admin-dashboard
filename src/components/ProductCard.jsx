@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80';
+const FALLBACK_IMAGE = 'https://placehold.co/600x400/1e293b/94a3b8?text=No+Image+Uploaded';
 
 const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -60,9 +60,9 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
   };
 
   return (
-    <div className="group bg-[#141414] border border-[#2a2a2a] rounded-2xl overflow-hidden flex flex-col w-full max-w-[480px] justify-self-center shadow-lg transition-all duration-300 hover:border-[#d4af37] hover:shadow-[0_8px_30px_rgba(212,175,55,0.15)] hover:-translate-y-1">
+    <div className="group bg-card border border-border-custom rounded-2xl overflow-hidden flex flex-col w-full shadow-lg transition-all duration-300 hover:border-active hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:-translate-y-1">
       
-      <div className="relative w-full h-[230px] bg-[#0a0a0a] overflow-hidden">
+      <div className="relative w-full h-[230px] bg-bg-main overflow-hidden">
         <img
           src={imagesList[currentImageIndex] || FALLBACK_IMAGE}
           alt={item.name || item.title || 'Product'}
@@ -77,13 +77,13 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
           <>
             <button
               onClick={handlePrev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80 cursor-pointer"
             >
               ‹
             </button>
             <button
               onClick={handleNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80 cursor-pointer"
             >
               ›
             </button>
@@ -91,7 +91,7 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
         )}
 
         {(item.isFeatured || item.featured) && (
-          <span className="absolute top-3 left-3 bg-[#d4af37] text-black text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow">
+          <span className="absolute top-2.5 left-2.5 bg-active text-bg-main text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow">
             <img src="../../icons/star_25dp_E3B158_FILL0_wght400_GRAD0_opsz24.png" alt="" /> Featured
           </span>
         )}
@@ -99,20 +99,20 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
         <span
           className={`absolute bottom-3 right-3 text-[11px] font-medium px-3 py-1 rounded-full backdrop-blur-md ${
             item.stock > 0
-              ? 'bg-black/60 text-[#d4af37] border border-[#d4af37]/30'
-              : 'bg-black/60 text-red-400 border border-red-500/30'
+              ? 'bg-black/60 text-active border border-active/30'
+              : 'bg-black/60 text-danger border border-danger/30'
           }`}
         >
           {item.stock > 0 ? `${item.stock} in stock` : 'Out of stock'}
         </span>
 
         {imagesList.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
+          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1">
             {imagesList.map((_, idx) => (
               <span
                 key={idx}
-                className={`w-1.5 h-1.5 rounded-full transition-all ${
-                  idx === currentImageIndex ? 'bg-[#d4af37] w-3' : 'bg-white/40'
+                className={`h-1.5 rounded-full transition-all ${
+                  idx === currentImageIndex ? 'bg-active w-3' : 'bg-white/40 w-1.5'
                 }`}
               />
             ))}
@@ -120,26 +120,27 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
         )}
       </div>
 
+      {/* Content */}
       <div className="p-5 flex flex-col flex-1 justify-between">
         <div>
-          <h3 className="text-lg font-bold text-white mb-1 line-clamp-1">
+          <h3 className="text-lg font-bold text-primary mb-1 line-clamp-1">
             {item.name || item.title}
           </h3>
 
-          <p className="text-[10px] font-bold text-[#a3a3a3] uppercase tracking-wider mb-2">
+          <p className="text-[10px] font-bold text-secondary uppercase tracking-wider mb-2">
             {[item.category, item.subCategory || item.subcategory, item.brand]
               .filter(Boolean)
               .join(' • ')}
           </p>
 
-          <p className="text-xs text-[#a3a3a3] leading-relaxed mb-4 line-clamp-2">
+          <p className="text-xs text-secondary leading-relaxed mb-3 line-clamp-2">
             {item.description || item.shortDescription}
           </p>
 
           <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-2xl font-black text-[#d4af37]">${item.price}</span>
+            <span className="text-2xl font-black text-active">${item.price}</span>
             {(item.discount > 0 || item.discountPrice > 0) && (
-              <span className="text-xs font-semibold text-[#d4af37]/70">
+              <span className="text-xs font-semibold text-secondary line-through">
                 -${item.discount || item.discountPrice} off
               </span>
             )}
@@ -150,7 +151,7 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
               {item.tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="bg-[#1a1a1a] border border-[#2a2a2a] text-[#a3a3a3] text-[10px] px-2 py-0.5 rounded"
+                  className="bg-bg-main border border-border-custom text-secondary text-[10px] px-2 py-0.5 rounded"
                 >
                   #{typeof tag === 'object' ? tag.name || tag.label : tag}
                 </span>
@@ -159,23 +160,24 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
           )}
         </div>
 
-        <div className="grid grid-cols-4 gap-2 pt-3 border-t border-[#2a2a2a]">
-          <button className="py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-[#a3a3a3] hover:text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1">
+        {/* Actions Grid */}
+        <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border-custom">
+          <button className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer">
             👁 View
           </button>
-          <button className="py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-[#a3a3a3] hover:text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1">
+          <button className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer">
             ✏ Edit
           </button>
           <button
             onClick={() => onQuickEdit(item)}
-            className="py-2 bg-[#1a1a1a] hover:bg-[#2a2a2a] text-[#a3a3a3] hover:text-white rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
           >
             ⚡ Quick Edit
           </button>
           <button
             onClick={() => onDelete(item._id || item.id)}
             disabled={isDeleting}
-            className="py-2 bg-[#2a1a1a] hover:bg-[#3a1a1a] text-red-400 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1"
+            className="py-1.5 bg-danger/10 hover:bg-danger/20 text-danger rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 disabled:opacity-50 cursor-pointer"
           >
             {isDeleting ? '...' : '🗑 Delete'}
           </button>
