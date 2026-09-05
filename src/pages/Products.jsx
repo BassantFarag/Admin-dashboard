@@ -99,7 +99,7 @@ const Products = () => {
     const discountPrice = Number(formData.get('discountPrice') || 0);
 
     if (discountPrice > price) {
-      alert("Validation Alert: The discount price cannot be higher than the original price.");
+      alert('Validation Alert: The discount price cannot be higher than the original price.');
       return;
     }
 
@@ -128,9 +128,9 @@ const Products = () => {
 
     } catch (err) {
       console.error('Failed to update product on server:', err?.response?.data || err);
-      
+
       const serverError = err?.response?.data;
-      let detailedMsg = 'Cheak The Server Error, Please Try Again Later.';
+      let detailedMsg = 'Check The Server Error, Please Try Again Later.';
 
       if (serverError) {
         if (typeof serverError === 'string') {
@@ -167,28 +167,48 @@ const Products = () => {
     }
   };
 
-  if (loading && allItems.length === 0) return <div className="p-8 min-h-screen bg-[#0a0a0a] text-[#a3a3a3] text-center">Loading products...</div>;
-  if (error) return <div className="p-8 min-h-screen bg-[#0a0a0a] text-red-500 text-center">{error}</div>;
+  if (loading && allItems.length === 0) {
+    return (
+      <div className="p-8 min-h-screen bg-bg-main text-secondary text-center flex items-center justify-center">
+        Loading products...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8 min-h-screen bg-bg-main text-danger text-center flex items-center justify-center">
+        {error}
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 min-h-screen bg-[#0a0a0a] text-[#e5e5e5]">
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-2xl p-5 px-6 flex items-center justify-between mb-5">
+    <div className="p-6 min-h-screen bg-bg-main text-primary">
+      {/* Header Bar */}
+      <div className="bg-card border border-border-custom rounded-2xl p-5 px-6 flex items-center justify-between mb-5">
         <div className="flex items-center gap-4">
-          <div className="w-11 h-11 border border-[#2a2a2a] rounded-xl flex items-center justify-center bg-[#1a1a1a] text-xl">
-            <img src="../../icons/store_25dp_E3B158_FILL0_wght400_GRAD0_opsz24.png" alt="" />
+          <div className="w-11 h-11 border border-border-custom rounded-xl flex items-center justify-center bg-bg-main text-active">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
           </div>
           <div>
-            <span className="text-[11px] font-bold text-[#a3a3a3] tracking-[1.5px] block">PRODUCT DASHBOARD</span>
-            <h1 className="text-3xl font-extrabold text-white mt-0.5">Products</h1>
+            <span className="text-[11px] font-bold text-secondary tracking-[1.5px] block">
+              PRODUCT DASHBOARD
+            </span>
+            <h1 className="text-3xl font-extrabold text-primary mt-0.5">Products</h1>
           </div>
         </div>
         <button
-          className="bg-[#d4af37] hover:bg-[#c5a02e] text-black px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg shadow-[#d4af37]/20"
+          onClick={() => setShowAddProduct(true)}
+          className="bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
         >
           + Add Product
         </button>
       </div>
 
+      {/* Stats Cards */}
       <StatsCards
         total={allItems.length}
         featured={allItems.filter((p) => p.isFeatured || p.featured).length}
@@ -198,49 +218,56 @@ const Products = () => {
         setActiveStatFilter={setActiveStatFilter}
       />
 
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-2xl p-3 mb-6">
+      {/* Search & Filter Section */}
+      <div className="bg-card border border-border-custom rounded-2xl p-3 mb-6">
         <div className="flex gap-3 items-center">
-          <div className="flex-1 flex items-center bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl px-4 py-2.5">
-            <span className="text-[#a3a3a3] mr-2"><img src="../../icons/search_25dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" alt="" /></span>
+          <div className="flex-1 flex items-center bg-bg-main border border-border-custom rounded-xl px-4 py-2.5">
+            <svg className="w-5 h-5 text-secondary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
             <input
               type="text"
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              className="w-full bg-transparent text-white text-sm outline-none placeholder-[#666]"
+              className="w-full bg-transparent text-primary text-sm outline-none placeholder:text-secondary"
             />
           </div>
 
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`border px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors ${
+            className={`border px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer ${
               showFilters
-                ? 'bg-[#1a1a1a] border-[#d4af37] text-white'
-                : 'bg-[#1a1a1a] border-[#2a2a2a] text-[#a3a3a3] hover:text-white'
+                ? 'bg-bg-main border-active text-primary'
+                : 'bg-bg-main border-border-custom text-secondary hover:text-primary'
             }`}
           >
-            <img src="../../icons/settings_25dp_E3B158_FILL0_wght400_GRAD0_opsz24.png" alt="" /> Filters
+            <svg className="w-4 h-4 text-active" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+            Filters
           </button>
 
           <button
             onClick={handleSearch}
-            className="bg-[#d4af37] hover:bg-[#c5a02e] text-black px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg shadow-[#d4af37]/20"
+            className="bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
           >
-            <img src="../../icons/search_25dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" alt="" /> Search
+            Search
           </button>
         </div>
 
+        {/* Filters Panel */}
         {showFilters && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-[#2a2a2a]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-border-custom">
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1.5">
-                <img src="../../icons/folder_20dp_FFFF55_FILL0_wght400_GRAD0_opsz20.png" alt="" /> Category
+              <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1.5">
+                Category
               </label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                className="w-full bg-bg-main border border-border-custom rounded-xl px-4 py-2.5 text-primary text-sm outline-none focus:border-active"
               >
                 <option value="All Categories">All Categories</option>
                 <option value="electronics">electronics</option>
@@ -253,26 +280,29 @@ const Products = () => {
             </div>
 
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1.5">
-                 Subcategory
+              <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1.5">
+                Subcategory
               </label>
               <input
                 type="text"
                 placeholder="e.g. smartphones"
                 value={subCategorySearch}
                 onChange={(e) => setSubCategorySearch(e.target.value)}
-                className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none placeholder-[#555] focus:border-[#d4af37]"
+                className="w-full bg-bg-main border border-border-custom rounded-xl px-4 py-2.5 text-primary text-sm outline-none placeholder:text-secondary focus:border-active"
               />
             </div>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center">
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
         {shownItems.map((item, index) => (
           <ProductCard
             key={item._id || item.id || index}
             item={item}
+            onView={(prod) => console.log('View product:', prod)}
+            onEdit={(prod) => setEditingItem(prod)}
             onQuickEdit={(prod) => setEditingItem(prod)}
             onDelete={deleteItem}
             isDeleting={deletingId === (item._id || item.id)}
@@ -280,6 +310,7 @@ const Products = () => {
         ))}
       </div>
 
+      {/* Edit Popup Modal */}
       {editingItem && (
         <EditPopup
           item={editingItem}
