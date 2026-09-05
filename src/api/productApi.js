@@ -18,4 +18,9 @@ export const getProductById = (id) => api.get(`/products/${id}`);
 export const deleteProduct = (id) => api.delete(`/products/${id}`);
 
 // update Product
-export const updateProduct = (id, payload) => api.patch(`/products/update/${id}`, payload);
+export const updateProduct = (id, payload) => 
+  api.patch(`/products/update/${id}`, payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });

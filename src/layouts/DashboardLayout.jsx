@@ -9,7 +9,7 @@ import Navbar from '../components/Navbar';
 
 const DashboardLayout = () => {
 
-    // handle Dark mode as your device 
+    
     const [isDark, setIsDark] = useState(() => {
         return localStorage.theme === 'dark' ||
         (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -36,7 +36,7 @@ const DashboardLayout = () => {
 
       
         <main className="p-8 flex-1">
-          <Outlet />
+          <Outlet context={{ isDark, setIsDark }} />
         </main>
       </div>
     </div>
