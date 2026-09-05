@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-
+import {useNavigate} from 'react-router-dom';
 const FALLBACK_IMAGE = 'https://placehold.co/600x400/1e293b/94a3b8?text=No+Image+Uploaded';
 
 const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const extractImageUrl = (img) => {
@@ -162,10 +163,16 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
 
         {/* Actions Grid */}
         <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border-custom">
-          <button className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer">
+          <button
+            onClick={() => navigate(`/products/${item._id || item.id}`)}
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+          >
             👁 View
           </button>
-          <button className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer">
+          <button
+            onClick={() => navigate(`/products/edit/${item._id || item.id}`)}
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+          >
             ✏ Edit
           </button>
           <button
