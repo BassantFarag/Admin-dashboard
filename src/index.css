@@ -64,6 +64,8 @@
   /* font family */
   --font-sans: 'Plus Jakarta Sans', sans-serif;
 }
+<<<<<<< HEAD
+=======
 
 /* react-loading-skeleton theme styling */
 .react-loading-skeleton {
@@ -108,3 +110,4 @@ body:not(.dark) ::-webkit-scrollbar-track {
   scrollbar-width: thin;
   scrollbar-color: #E3B158 transparent;
 }
+>>>>>>> main
