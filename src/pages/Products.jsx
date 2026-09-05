@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getProducts, searchProducts, updateProduct, deleteProduct } from '../api/productApi';
 import StatsCards from '../components/StatsCards';
 import ProductCard from '../components/ProductCard';
 import EditPopup from '../components/EditPopup';
 
 const Products = () => {
+  const navigate = useNavigate();
   const [allItems, setAllItems] = useState([]);
   const [shownItems, setShownItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,8 +22,6 @@ const Products = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
-
-  const [showAddProduct, setShowAddProduct] = useState(false);
 
   const fetchAllItems = async () => {
     try {
@@ -95,8 +95,8 @@ const Products = () => {
     const itemId = editingItem?._id || editingItem?.id;
     if (!itemId) return;
 
-    const price = Number(formData.get('price') || 0);
-    const discountPrice = Number(formData.get('discountPrice') || 0);
+    const price = Number(formData.get ? formData.get('price') : formData.price || 0);
+    const discountPrice = Number(formData.get ? formData.get('discountPrice') : formData.discountPrice || 0);
 
     if (discountPrice > price) {
       alert('Validation Alert: The discount price cannot be higher than the original price.');
@@ -201,7 +201,7 @@ const Products = () => {
           </div>
         </div>
         <button
-          onClick={() => setShowAddProduct(true)}
+          onClick={() => navigate('/products/add')}
           className="bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
         >
           + Add Product
@@ -297,17 +297,20 @@ const Products = () => {
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
-        {shownItems.map((item, index) => (
-          <ProductCard
-            key={item._id || item.id || index}
-            item={item}
-            onView={(prod) => console.log('View product:', prod)}
-            onEdit={(prod) => setEditingItem(prod)}
-            onQuickEdit={(prod) => setEditingItem(prod)}
-            onDelete={deleteItem}
-            isDeleting={deletingId === (item._id || item.id)}
-          />
-        ))}
+        {shownItems.map((item, index) => {
+          const id = item._id || item.id;
+          return (
+            <ProductCard
+              key={id || index}
+              item={item}
+              onView={() => navigate(`/products/${id}`)}
+              onEdit={() => navigate(`/products/edit/${id}`)}
+              onQuickEdit={(prod) => setEditingItem(prod)}
+              onDelete={deleteItem}
+              isDeleting={deletingId === id}
+            />
+          );
+        })}
       </div>
 
       {/* Edit Popup Modal */}
