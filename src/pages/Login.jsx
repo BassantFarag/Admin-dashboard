@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
 
@@ -54,36 +54,65 @@ const Login = () => {
 
     try {
       await login(formData.email.trim(), formData.password);
-      navigate("/", { replace: true });
+
+      navigate("/", { replace: true, state: { showLoginToast: true } });
+      
     } catch (error) {
       const message =
-        error?.response?.data?.message || error?.response?.data?.error || "Invalid email or password.";
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        "Invalid email or password.";
       setError(message);
     } finally {
       setLoading(false);
     }
   };
 
-const BrandShape = () => (
-  <svg
-    width="100%"
-    height="100%"
-    viewBox="0 0 500 900"
-    preserveAspectRatio="xMidYMid slice"
-    className="absolute inset-0 h-full w-full"
-  >
-    <rect x="0" y="0" width="500" height="900" fill={darkMode ? "#12130f" : "#f3e6c8"} />
+  const BrandShape = () => (
+    <svg
+      width="100%"
+      height="100%"
+      viewBox="0 0 500 900"
+      preserveAspectRatio="xMidYMid slice"
+      className="absolute inset-0 h-full w-full"
+    >
+      <rect
+        x="0"
+        y="0"
+        width="500"
+        height="900"
+        fill={darkMode ? "#12130f" : "#f3e6c8"}
+      />
 
-    {/* Overlapping triangle/origami shapes */}
-    <polygon points="0,0 500,0 250,260 0,520" fill={darkMode ? "#4a3a12" : "#f6d98a"} opacity="0.9" />
-    <polygon points="0,0 250,260 0,520" fill={darkMode ? "#6b5218" : "#f0c866"} />
-    <polygon points="0,520 250,260 500,520 250,780" fill={darkMode ? "#3a2c0e" : "#eec24f"} opacity="0.85" />
-    <polygon points="0,520 250,780 0,1040" fill={darkMode ? "#5c4614" : "#e8b93d"} />
-    <polygon points="0,780 250,780 0,1040" fill={darkMode ? "#332608" : "#dcae33"} />
-  </svg>
-);
+      {/* Overlapping triangle/origami shapes */}
+      <polygon
+        points="0,0 500,0 250,260 0,520"
+        fill={darkMode ? "#4a3a12" : "#f6d98a"}
+        opacity="0.9"
+      />
+      <polygon
+        points="0,0 250,260 0,520"
+        fill={darkMode ? "#6b5218" : "#f0c866"}
+      />
+      <polygon
+        points="0,520 250,260 500,520 250,780"
+        fill={darkMode ? "#3a2c0e" : "#eec24f"}
+        opacity="0.85"
+      />
+      <polygon
+        points="0,520 250,780 0,1040"
+        fill={darkMode ? "#5c4614" : "#e8b93d"}
+      />
+      <polygon
+        points="0,780 250,780 0,1040"
+        fill={darkMode ? "#332608" : "#dcae33"}
+      />
+    </svg>
+  );
   return (
-    <div className={`flex min-h-screen w-full flex-col lg:flex-row ${darkMode ? "bg-[#0d0e10]" : "bg-[#fbf6ec]"}`}>
+    <div
+      className={`flex min-h-screen w-full flex-col lg:flex-row ${darkMode ? "bg-[#0d0e10]" : "bg-[#fbf6ec]"}`}
+    >
       {/* Brand panel — small strip on mobile, full side panel on desktop */}
       <div className="relative h-40 w-full overflow-hidden sm:h-52 lg:h-auto lg:w-[42%]">
         <BrandShape />
@@ -113,12 +142,28 @@ const BrandShape = () => (
           }`}
         >
           {darkMode ? (
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            >
               <circle cx="12" cy="12" r="5" />
               <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
             </svg>
           ) : (
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            >
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           )}
@@ -132,9 +177,19 @@ const BrandShape = () => (
                 darkMode ? "bg-[#e3b158]" : "bg-[#d9a441]"
               }`}
             >
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#161719" strokeWidth="1.6">
+              <svg
+                width="34"
+                height="34"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#161719"
+                strokeWidth="1.6"
+              >
                 <circle cx="12" cy="8" r="3.4" />
-                <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" strokeLinecap="round" />
+                <path
+                  d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"
+                  strokeLinecap="round"
+                />
               </svg>
             </div>
           </div>
@@ -170,8 +225,22 @@ const BrandShape = () => (
                   fill="none"
                   className={darkMode ? "text-[#8a8a86]" : "text-[#8a7a55]"}
                 >
-                  <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.7" />
-                  <path d="M3 7L12 13L21 7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  <rect
+                    x="3"
+                    y="5"
+                    width="18"
+                    height="14"
+                    rx="2"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                  />
+                  <path
+                    d="M3 7L12 13L21 7"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
                 <input
                   id="email"
@@ -182,7 +251,9 @@ const BrandShape = () => (
                   placeholder="Email"
                   autoComplete="email"
                   className={`w-full bg-transparent text-sm outline-none ${
-                    darkMode ? "text-white placeholder:text-[#7a7a77]" : "text-[#1a1b1d] placeholder:text-[#9a8a5f]"
+                    darkMode
+                      ? "text-white placeholder:text-[#7a7a77]"
+                      : "text-[#1a1b1d] placeholder:text-[#9a8a5f]"
                   }`}
                 />
               </div>
@@ -202,8 +273,21 @@ const BrandShape = () => (
                   fill="none"
                   className={darkMode ? "text-[#8a8a86]" : "text-[#8a7a55]"}
                 >
-                  <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.7" />
-                  <path d="M8 10V7.5C8 5.29 9.79 3.5 12 3.5C14.21 3.5 16 5.29 16 7.5V10" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                  <rect
+                    x="5"
+                    y="10"
+                    width="14"
+                    height="10"
+                    rx="2"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                  />
+                  <path
+                    d="M8 10V7.5C8 5.29 9.79 3.5 12 3.5C14.21 3.5 16 5.29 16 7.5V10"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                  />
                 </svg>
                 <input
                   id="password"
@@ -214,14 +298,18 @@ const BrandShape = () => (
                   placeholder="Password"
                   autoComplete="current-password"
                   className={`w-full bg-transparent text-sm outline-none ${
-                    darkMode ? "text-white placeholder:text-[#7a7a77]" : "text-[#1a1b1d] placeholder:text-[#9a8a5f]"
+                    darkMode
+                      ? "text-white placeholder:text-[#7a7a77]"
+                      : "text-[#1a1b1d] placeholder:text-[#9a8a5f]"
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   className={`shrink-0 text-xs font-medium ${
-                    darkMode ? "text-[#8a8a86] hover:text-white" : "text-[#8a7a55] hover:text-[#1a1b1d]"
+                    darkMode
+                      ? "text-[#8a8a86] hover:text-white"
+                      : "text-[#8a7a55] hover:text-[#1a1b1d]"
                   }`}
                 >
                   {showPassword ? "Hide" : "Show"}
@@ -235,7 +323,9 @@ const BrandShape = () => (
                 type="button"
                 onClick={() => setError("Password reset is not available yet.")}
                 className={`text-xs font-bold ${
-                  darkMode ? "text-[#e3b158] hover:text-[#d9a441]" : "text-[#b88322] hover:text-[#d9a441]"
+                  darkMode
+                    ? "text-[#e3b158] hover:text-[#d9a441]"
+                    : "text-[#b88322] hover:text-[#d9a441]"
                 }`}
               >
                 Forgot password?
@@ -251,9 +341,27 @@ const BrandShape = () => (
                 }`}
               >
                 {loading ? (
-                  <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="3" opacity="0.3" />
-                    <path d="M21 12C21 7.03 16.97 3 12 3" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                  <svg
+                    className="animate-spin"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      opacity="0.3"
+                    />
+                    <path
+                      d="M21 12C21 7.03 16.97 3 12 3"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                    />
                   </svg>
                 ) : (
                   "LOGIN"

@@ -1,10 +1,14 @@
 import { ShoppingCart, Clock3, CircleDollarSign, ChartColumn, Package, Users } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { toast, ToastContainer } from "react-toastify";
 import api from "../api/axios";
 import ThreatChart from "../components/ThreatChart";
+import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
+  const location = useLocation();
   const [dashboard, setDashboard] = useState({
     orders: {
       total: 0,
@@ -29,24 +33,60 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    const getDashboard = async () => {
-      try {
-        const response = await api.get("/orders/admin/dashboard");
-               
-        if (response.data?.dashboard) {
-          setDashboard(response.data.dashboard);
+    if (location.state?.showLoginToast) {
+      toast.success("Login successful", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: {
+          backgroundColor: "var(--color-card-bg)",
+          color: "var(--color-text-primary)",
+          border: "1px solid var(--color-border-main)",
+        },
+      });
 
-        }
-      } catch (error) {
-        console.log(
-          "Dashboard Error:",
-          error.response?.data || error.message
-        );
-      }
-    };
+      window.history.replaceState({}, document.title);
+    }
+const getDashboard = async () => {
+  try {
+    const response = await api.get("/orders/admin/dashboard");
+
+    if (response.data?.dashboard) {
+      setDashboard(response.data.dashboard);
+    }
+  } catch (error) {
+    console.log(
+      "Dashboard Error:",
+      error.response?.data || error.message
+    );
+
+    toast.error("Failed to fetch dashboard data!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+
+      style: {
+        backgroundColor: "var(--color-card-bg)",
+        color: "var(--color-text-primary)",
+        border: "1px solid var(--color-brand-active)",
+        borderRadius: "12px",
+        boxShadow: "0 8px 25px rgba(0, 0, 0, 0.15)",
+        fontFamily: "var(--font-sans)",
+        fontSize: "14px",
+        fontWeight: "500",
+      },
+    });
+  }
+};
 
     getDashboard();
-  }, []);
+  }, [location]);
 
   const stats = [
     {
@@ -105,27 +145,13 @@ const Dashboard = () => {
   };
 
   const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: 25,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
+    hidden: { opacity: 0, y: 25 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
   };
 
   const containerVariants = {
     hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.09,
-      },
-    },
+    visible: { transition: { staggerChildren: 0.09 } },
   };
 
   const formatDate = (date) => {
@@ -137,21 +163,13 @@ const Dashboard = () => {
   };
 
   const getCustomerName = (order) => {
-    return (
-      order?.shippingAddress?.fullName ||
-      "Unknown Customer"
-    );
+    return order?.shippingAddress?.fullName || "Unknown Customer";
   };
 
   const getOrderDetails = (order) => {
-    if (!order?.items?.length) {
-      return "No products";
-    }
+    if (!order?.items?.length) return "No products";
     return order.items
-      .map(
-        (item) =>
-          `${item.name || "Product"} × ${item.quantity || 0}`
-      )
+      .map((item) => `${item.name || "Product"} × ${item.quantity || 0}`)
       .join(", ");
   };
 
@@ -171,6 +189,16 @@ const Dashboard = () => {
       variants={containerVariants}
       className="min-h-screen w-full bg-main px-2 py-2 sm:px-3 md:px-4 lg:px-5 lg:py-3"
     >
+      <ToastContainer 
+        toastStyle={{ 
+          backgroundColor: "var(--color-card-bg)", 
+          color: "var(--color-text-primary)",
+          borderRadius: "1rem",
+          border: "1px solid var(--color-border-main)",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.12)"
+        }} 
+      />
+
       <div className="mx-auto w-full max-w-[1600px] space-y-4 lg:space-y-5">
         <motion.section variants={cardVariants}>
           <div className="relative overflow-hidden rounded-2xl border border-border-custom bg-card px-4 py-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:px-5 sm:py-4 lg:px-6 lg:py-5">
@@ -188,7 +216,6 @@ const Dashboard = () => {
             </div>
           </div>
         </motion.section>
-
       
         <motion.section
           variants={containerVariants}
@@ -235,7 +262,6 @@ const Dashboard = () => {
             );
           })}
         </motion.section>
-
       
         <section className="grid grid-cols-1 gap-4 xl:grid-cols-12">
           <div className="xl:col-span-8 shadow-[0_4px_20px_rgba(0,0,0,0.08)] rounded-2xl bg-card">
