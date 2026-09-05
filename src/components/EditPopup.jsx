@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const EditPopup = ({ item, onClose, onSave, isSaving }) => {
+const EditPopup = ({ item, onClose, onSave, isSaving, isDark = true }) => {
   const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -150,28 +150,31 @@ const EditPopup = ({ item, onClose, onSave, isSaving }) => {
     onSave(data);
   };
 
+
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
-      <div className="bg-[#0d0d0d] border border-[#2a2a2a] rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl text-[#a3a3a3]">
-        <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#2a2a2a]">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-card border border-border-custom text-primary rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl transition-colors duration-300">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6 pb-4 border-b border-border-custom">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#d4af37]"></span>
-            <h2 className="text-xl font-bold text-white">Edit Product</h2>
+            <span className="w-2.5 h-2.5 rounded-full bg-active"></span>
+            <h2 className="text-xl font-bold text-primary">Edit Product</h2>
           </div>
-          <button onClick={onClose} className="text-[#a3a3a3] hover:text-white text-xl transition-colors">✕</button>
+          <button onClick={onClose} className="text-secondary hover:text-active text-xl transition-colors">✕</button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Gallery Section */}
           <div className="md:col-span-5 space-y-4">
-            <div className="bg-[#141414] border border-[#2a2a2a] rounded-xl p-4">
-              <div className="flex items-center gap-2 text-white font-semibold mb-1 text-sm">
+            <div className="bg-bg-main border border-border-custom rounded-xl p-4">
+              <div className="flex items-center gap-2 text-primary font-semibold mb-1 text-sm">
                 <span>🖼️</span> Product Gallery
               </div>
-              <p className="text-xs text-[#a3a3a3] mb-4">Upload product images (max 5)</p>
+              <p className="text-xs text-secondary mb-4">Upload product images (max 5)</p>
 
               <div className="space-y-3 mb-4">
                 {existingImages.map((image, idx) => (
-                  <div key={`existing-${image.public_id || idx}`} className="relative group rounded-xl overflow-hidden bg-[#0a0a0a] border border-[#2a2a2a]">
+                  <div key={`existing-${image.public_id || idx}`} className="relative group rounded-xl overflow-hidden bg-card border border-border-custom">
                     <img src={image.url} alt={`Product ${idx + 1}`} className="w-full h-36 object-cover" />
                     <button
                       type="button"
@@ -183,13 +186,13 @@ const EditPopup = ({ item, onClose, onSave, isSaving }) => {
                   </div>
                 ))}
                 {newImages.map((file, idx) => (
-                  <div key={`new-${idx}`} className="relative group rounded-xl overflow-hidden bg-[#0a0a0a] border border-[#2a2a2a]">
+                  <div key={`new-${idx}`} className="relative group rounded-xl overflow-hidden bg-card border border-border-custom">
                     <img src={URL.createObjectURL(file)} alt={`New Product ${idx + 1}`} className="w-full h-36 object-cover" />
-                    <div className="absolute top-2 left-2 bg-[#d4af37] text-black text-[10px] px-2 py-1 rounded">New</div>
+                    <div className="absolute top-2 left-2 bg-active text-bg-main text-[10px] font-bold px-2 py-1 rounded">New</div>
                     <button
                       type="button"
                       onClick={() => handleRemoveNewImage(idx)}
-                      className="absolute top-2 right-2 bg-red-600/90 hover:bg-red-600 text-white text-xs px-2 py-1 rounded transition-colors"
+                      className="absolute top-2 right-2 bg-danger text-white text-xs px-2 py-1 rounded transition-colors"
                     >
                       ✕ Remove
                     </button>
@@ -199,7 +202,7 @@ const EditPopup = ({ item, onClose, onSave, isSaving }) => {
 
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-[#2a2a2a] hover:border-[#d4af37] rounded-xl p-6 text-center cursor-pointer transition-colors bg-[#0a0a0a]"
+                className="border-2 border-dashed border-border-custom hover:border-active rounded-xl p-6 text-center cursor-pointer transition-colors bg-card"
               >
                 <input
                   type="file"
@@ -210,101 +213,101 @@ const EditPopup = ({ item, onClose, onSave, isSaving }) => {
                   className="hidden"
                 />
                 <div className="text-2xl mb-2">📥</div>
-                <p className="text-xs text-white font-medium mb-1">Click to upload new image</p>
-                <p className="text-[10px] text-[#a3a3a3]">PNG, JPG, WEBP</p>
-                <p className="text-[10px] text-[#666] mt-1">Selected: {existingImages.length + newImages.length} / 5</p>
+                <p className="text-xstext-primary font-medium mb-1">Click to upload new image</p>
+                <p className="text-[10px] text-secondary">PNG, JPG, WEBP</p>
+                <p className="text-[10px]text-secondary mt-1">Selected: {existingImages.length + newImages.length} / 5</p>
               </div>
             </div>
           </div>
 
           <div className="md:col-span-7 space-y-4">
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">PRODUCT NAME *</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1 text-secondary">PRODUCT NAME *</label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
               />
             </div>
 
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">SHORT DESCRIPTION</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1 text-secondary">SHORT DESCRIPTION</label>
               <input
                 type="text"
                 name="shortDescription"
                 value={formData.shortDescription}
                 onChange={handleChange}
-                className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
               />
             </div>
 
             <div>
-              <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">DESCRIPTION</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider block mb-1 text-secondary">DESCRIPTION</label>
               <textarea
                 name="description"
                 rows="3"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37] resize-none"
+                className="w-full rounded-xl px-4 py-2.5 text-sm outline-none resize-none bg-input border border-border-custom text-primary focus:border-active"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">PRICE</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">PRICE</label>
                 <input
                   type="number"
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
-                  className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                  className="w-full bg-[#141414] border border-border-custom rounded-xl px-4 py-2.5 text-primary focus:border-active text-sm outline-none "
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">DISCOUNT PRICE</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">DISCOUNT PRICE</label>
                 <input
                   type="number"
                   name="discountPrice"
                   value={formData.discountPrice}
                   onChange={handleChange}
-                  className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">STOCK</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">STOCK</label>
                 <input
                   type="number"
                   name="stock"
                   value={formData.stock}
                   onChange={handleChange}
-                  className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">SKU</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider block mb-1 text-secondary">SKU</label>
                 <input
                   type="text"
                   name="sku"
                   value={formData.sku}
                   onChange={handleChange}
-                  className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">CATEGORY</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">CATEGORY</label>
                 <select
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 >
                   <option value="electronics">electronics</option>
                   <option value="phones">phones</option>
@@ -316,70 +319,70 @@ const EditPopup = ({ item, onClose, onSave, isSaving }) => {
                 </select>
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">SUBCATEGORY</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">SUBCATEGORY</label>
                 <input
                   type="text"
                   name="subcategory"
                   value={formData.subcategory}
                   onChange={handleChange}
-                  className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">BRAND</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">BRAND</label>
                 <input
                   type="text"
                   name="brand"
                   value={formData.brand}
                   onChange={handleChange}
-                  className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#a3a3a3] block mb-1">TAGS</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-secondary block mb-1">TAGS</label>
                 <input
                   type="text"
                   name="tags"
                   value={formData.tags}
                   onChange={handleChange}
-                  className="w-full bg-[#141414] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-white text-sm outline-none focus:border-[#d4af37]"
+                  className="w-full rounded-xl px-4 py-2.5 text-sm outline-none bg-input border border-border-custom text-primary focus:border-active"
                 />
               </div>
             </div>
 
             <div className="flex gap-4 pt-2">
-              <label className="flex items-center gap-2 bg-[#141414] border border-[#2a2a2a] px-4 py-2.5 rounded-xl cursor-pointer">
+              <label className="flex items-center gap-2 border border-border-custom bg-input px-4 py-2.5 rounded-xl cursor-pointer">
                 <input
                   type="checkbox"
                   name="featured"
                   checked={formData.featured}
                   onChange={handleChange}
-                  className="accent-[#d4af37]"
+                  className="accent-active"
                 />
-                <span className="text-xs font-semibold text-white">★ Featured</span>
+                <span className="text-xs font-semibold text-primary">★ Featured</span>
               </label>
 
-              <label className="flex items-center gap-2 bg-[#141414] border border-[#2a2a2a] px-4 py-2.5 rounded-xl cursor-pointer">
+              <label className="flex items-center gap-2 border border-border-custom bg-input px-4 py-2.5 rounded-xl cursor-pointer">
                 <input
                   type="checkbox"
                   name="isActive"
                   checked={formData.isActive}
                   onChange={handleChange}
-                  className="accent-[#d4af37]"
+                  className="accent-active"
                 />
-                <span className="text-xs font-semibold text-white">🔘 Active</span>
+                <span className="text-xs font-semibold text-primary">🔘 Active</span>
               </label>
             </div>
           </div>
-
-          <div className="md:col-span-12 flex justify-end gap-3 pt-4 border-t border-[#2a2a2a]">
+           {/* Footer Actions */}
+          <div className="md:col-span-12 flex justify-end gap-3 pt-4 border-t border-border-custom">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 bg-[#141414] hover:bg-[#2a2a2a] text-[#a3a3a3] hover:text-white font-medium rounded-xl text-sm transition-colors"
+              className="px-6 py-2.5 font-medium rounded-xl text-sm transition-colors text-secondary hover:text-primary bg-input"
             >
               Cancel
             </button>
@@ -387,7 +390,7 @@ const EditPopup = ({ item, onClose, onSave, isSaving }) => {
               type="button"
               onClick={handleSaveClick}
               disabled={isSaving}
-              className="px-6 py-2.5 bg-[#d4af37] hover:bg-[#c5a02e] text-black font-semibold rounded-xl text-sm transition-colors shadow-lg shadow-[#d4af37]/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="px-6 py-2.5 bg-active hover:bg-active-hover text-bg-main font-semibold rounded-xl text-sm transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isSaving ? 'Saving...' : 'Save Product'}
             </button>
