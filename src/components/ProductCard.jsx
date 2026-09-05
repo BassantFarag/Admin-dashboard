@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const FALLBACK_IMAGE = 'https://placehold.co/600x400/1e293b/94a3b8?text=No+Image+Uploaded';
 
 const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const extractImageUrl = (img) => {
     if (!img) return null;
     if (typeof img === 'string') {
-      if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:image')) {
-        return img;
-      }
       return img;
     }
     if (typeof img === 'object') {
@@ -48,6 +47,7 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
   };
 
   const imagesList = getImagesList();
+  const itemId = item._id || item.id;
 
   const handleNext = (e) => {
     e.stopPropagation();
@@ -61,7 +61,7 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
 
   return (
     <div className="group bg-card border border-border-custom rounded-2xl overflow-hidden flex flex-col w-full shadow-lg transition-all duration-300 hover:border-active hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:-translate-y-1">
-      
+
       <div className="relative w-full h-[230px] bg-bg-main overflow-hidden">
         <img
           src={imagesList[currentImageIndex] || FALLBACK_IMAGE}
@@ -162,10 +162,16 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
 
         {/* Actions Grid */}
         <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border-custom">
-          <button className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer">
+          <button
+            onClick={() => navigate(`/products/${itemId}`)}
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+          >
             👁 View
           </button>
-          <button className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer">
+          <button
+            onClick={() => navigate(`/products/edit/${itemId}`)}
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+          >
             ✏ Edit
           </button>
           <button
@@ -175,7 +181,7 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
             ⚡ Quick Edit
           </button>
           <button
-            onClick={() => onDelete(item._id || item.id)}
+            onClick={() => onDelete(itemId)}
             disabled={isDeleting}
             className="py-1.5 bg-danger/10 hover:bg-danger/20 text-danger rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 disabled:opacity-50 cursor-pointer"
           >
