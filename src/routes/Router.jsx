@@ -1,14 +1,21 @@
-import { createBrowserRouter } from 'react-router-dom';
-import DashboardLayout from '../layouts/DashboardLayout';
-import Dashboard from '../pages/Dashboard';
-import Login from '../pages/Login'; 
-import Users from '../pages/Users';
-import Products from '../pages/Products';
-import AddProduct from '../pages/AddProduct';
-import Orders from '../pages/Orders';
-import Carts from '../pages/Carts';
-import Settings from '../pages/Settings';
+import { createBrowserRouter } from "react-router-dom";
+
+import DashboardLayout from "../layouts/DashboardLayout";
+
+import Dashboard from "../pages/Dashboard";
+import Login from "../pages/Login";
+import Users from "../pages/Users";
+import Products from "../pages/Products";
+import AddProduct from "../pages/AddProduct";
+import Orders from "../pages/Orders";
+import Carts from "../pages/Carts";
+import Settings from "../pages/Settings";
 import ProductView from "../pages/ProductView";
+<<<<<<< HEAD
+=======
+import EditProduct from "../components/EditProduct";
+
+>>>>>>> main
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
 
@@ -48,6 +55,10 @@ export const router = createBrowserRouter([
               {
                 path: "products/:id",
                 element: <ProductView />,
+              },
+              {
+                path: "products/edit/:id",
+                element: <EditProduct />,
               },
               {
                 path: "orders",

@@ -6,7 +6,7 @@ const StatCard = ({ title, value, icon }) => {
             <p className="text-3xl font-bold text-primary">{value}</p>
         </div>
 
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-active text-white">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-active text-primary hover:bg-active-hover">
             {icon}
         </div>
         </div>

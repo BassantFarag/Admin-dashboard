@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Eye, Tag, Folder } from "lucide-react";
 import { getProductById } from "../api/productApi";
+import Loading from "../components/Loading";
 
 const ProductView = () => {
   const { id } = useParams();
@@ -29,11 +30,7 @@ const ProductView = () => {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="p-6">
-        <p className="dark:text-white">Loading...</p>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error || !product) {

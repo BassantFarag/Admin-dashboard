@@ -1,16 +1,11 @@
 const Button = ({
     children,
-    variant = "primary",
     leftIcon,
     rightIcon,
     type = "button",
     className = "",
     ...props
     }) => {
-    const variants = {
-        primary: "bg-active text-white hover:bg-active-hover",
-        danger: "bg-danger text-white hover:bg-danger/90",
-    };
 
     return (
         <button
@@ -23,7 +18,6 @@ const Button = ({
             transition
             active:scale-95
             disabled:cursor-not-allowed disabled:opacity-50
-            ${variants[variant]}
             ${className}
         `}
         {...props}
