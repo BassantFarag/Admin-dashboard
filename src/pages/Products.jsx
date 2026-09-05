@@ -201,7 +201,7 @@ const Products = () => {
           </div>
         </div>
         <button
-          onClick={() => navigate('/products/add')}
+          onClick={() => navigate('/add-product')}
           className="bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
         >
           + Add Product
