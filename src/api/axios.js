@@ -1,8 +1,10 @@
 import axios from 'axios';
 
-
 const api = axios.create({
- baseURL: 'https://e-commerce-api-3wara.vercel.app',     
+  baseURL: '/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
   withCredentials: true,
 });
 

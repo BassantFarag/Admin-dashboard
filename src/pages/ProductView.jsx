@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Eye, Tag, Folder, ImageOff } from "lucide-react";
 import { getProductById } from "../api/productApi";
+import Loading from "../components/Loading";
 
 const FALLBACK_IMAGE =
   "https://placehold.co/600x400/1e293b/94a3b8?text=No+Image+Uploaded";
@@ -42,11 +43,7 @@ const ProductView = () => {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-bg-main flex items-center justify-center">
-        <p className="text-secondary text-sm">Loading product...</p>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error || !product) {

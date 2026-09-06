@@ -11,8 +11,11 @@ import Orders from "../pages/Orders";
 import Carts from "../pages/Carts";
 import Settings from "../pages/Settings";
 import ProductView from "../pages/ProductView";
+<<<<<<< HEAD
+=======
 import EditProduct from "../components/EditProduct";
 
+>>>>>>> main
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
 
@@ -34,6 +37,7 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
+                
                 element: <Dashboard />,
               },
               {
@@ -54,7 +58,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: "products/edit/:id",
-                element: <EditProduct />, 
+                element: <EditProduct />,
               },
               {
                 path: "orders",
