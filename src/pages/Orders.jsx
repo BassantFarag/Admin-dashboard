@@ -13,6 +13,7 @@
 
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import OrderSidebar from "../components/orderSidebar";
 import OrdersTable from "../components/OrdersTable";
 import OrdersFilter from "../components/OrdersFilters";
 import HeaderTable from "../components/HeaderTable";
@@ -20,12 +21,14 @@ import { getAllOrders } from "../api/OrdersApi";
 import Pagination from "../components/Pagination";
 
 const Orders = () => {
+
   // Main state for complete orders list retrieved from API.
   const [orders, setOrders] = useState([]);
   
   // Local loading state controlling table skeleton/spinner representation.
   const [loading, setLoading] = useState(true);
 
+  const [selectedOrder, setSelectedOrder] = useState(null);
   // Pagination state configuration.
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
@@ -118,7 +121,7 @@ const Orders = () => {
       />
 
       {/* Orders data table component displaying active page items */}
-      <OrdersTable orders={currentOrders} isLoading={loading} />
+      <OrdersTable orders={currentOrders} isLoading={loading} onOrderClick={setSelectedOrder} />
 
       {/* Pagination control toolbar rendered only when data is available */}
       {filteredOrders.length > 0 && (
@@ -127,7 +130,28 @@ const Orders = () => {
           totalPages={totalPages}
           setCurrentPage={setCurrentPage}
         />
+        
       )}
+{selectedOrder && (
+  <OrderSidebar
+    order={selectedOrder}
+    onClose={() => setSelectedOrder(null)}
+    onOrderUpdated={(updatedData) => {
+      setOrders((prevOrders) =>
+        prevOrders.map((item) =>
+          item._id === selectedOrder._id
+            ? { ...item, ...updatedData }
+            : item
+        )
+      );
+
+      setSelectedOrder((prev) => ({
+        ...prev,
+        ...updatedData,
+      }));
+    }}
+  />
+)}
     </div>
   );
 };
