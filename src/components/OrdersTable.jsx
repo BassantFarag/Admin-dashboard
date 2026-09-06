@@ -36,7 +36,7 @@ const SkeletonRow = () => (
   </tr>
 );
 
-function OrdersTable({ orders = [], isLoading = false }) {
+function OrdersTable({ orders = [], isLoading = false , onOrderClick  }) {
   return (
     <div className="rounded-2xl shadow-xl border border-border-custom bg-card/80 overflow-hidden backdrop-blur-md">
       <div className="overflow-x-auto">
@@ -71,7 +71,8 @@ function OrdersTable({ orders = [], isLoading = false }) {
                 return (
                   <tr
                     key={order._id}
-                    className="hover:bg-gradient-to-r hover:from-amber-500/[0.04] hover:via-amber-500/[0.02] hover:to-transparent transition-all duration-300 group"
+                     onClick={() => onOrderClick?.(order)}
+                    className="hover:bg-gradient-to-r cursor-pointer hover:from-amber-500/[0.04] hover:via-amber-500/[0.02] hover:to-transparent transition-all duration-300 group"
                   >
                     {/* Order ID */}
                     <td className="py-4 px-6 font-mono text-xs font-semibold text-primary/90 tracking-wider">
