@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard';
 import EditPopup from '../components/EditPopup';
 import Loading from '../components/Loading';
 
+
 const Products = () => {
   const navigate = useNavigate();
   const [allItems, setAllItems] = useState([]);

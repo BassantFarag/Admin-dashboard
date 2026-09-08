@@ -2,11 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'; 
 import ProductHeader from '../components/ProductHeader';
 import ProductForm from '../components/ProductForm';
-import * as apiService from '../api/axios';
 
+
+
+// import { getProductById, updateProduct } from '../api/axios'; 
+import apiService from '../api/axios'; 
 
 export default function EditProductPage() {
   const { id } = useParams(); 
+
+  useEffect(() => {
+  if (id) {
+      console.log("Connected Successfully! Product ID is:", id);
+      
+    }
+  }, [id]);
+    
   
   const [isDark, setisDark] = useState(() => 
     document.documentElement.classList.contains('dark')
@@ -45,9 +56,8 @@ export default function EditProductPage() {
         setLoading(true);
         
        
+        // const response = await getProductById(id);
         const response = await apiService.getProductById(id);
-
-        
         const product = response?.data?.product || response?.data; 
 
         if (product) {
@@ -83,9 +93,8 @@ console.warn("Warning: No ID available in the browser URL to connect to the Live
   const handleSaveChanges = async () => {
     try {
         console.log("Sending updated data to the database...", formData); 
+        // const response = await updateProduct(id, formData);
         const response = await apiService.updateProduct(id, formData);
-
-      
       if (response?.data?.success || response?.status === 200) {
         alert("Changes saved and updated in the database successfully!");
       }
@@ -112,7 +121,7 @@ console.warn("Warning: No ID available in the browser URL to connect to the Live
       <div className={`p-10 text-center font-bold h-screen flex items-center justify-center ${
         isDark ? 'bg-[#0d0e10] text-[#c9c8c3]' : 'bg-[#f8f8f6] text-[#3a3b3e]'
       }`}>
-        No product data available
+        No product data available. Please verify the product ID.
       </div>
     );
   }
