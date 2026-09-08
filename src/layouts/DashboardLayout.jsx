@@ -9,7 +9,7 @@ import Navbar from '../components/Navbar';
 
 const DashboardLayout = () => {
 
-    // handle Dark mode as your device 
+    
     const [isDark, setIsDark] = useState(() => {
         return localStorage.theme === 'dark' ||
         (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -27,7 +27,7 @@ const DashboardLayout = () => {
 
 
   return (
-    <div className="flex min-h-screen bg-bg-main text-primary transition-colors duration-200">
+    <div className="flex flex h-screen w-full overflow-hidden bg-bg-main text-primary transition-colors duration-200">
         <Sidebar />
 
         <div className="flex-1 flex flex-col">
@@ -35,8 +35,8 @@ const DashboardLayout = () => {
         <Navbar isDark={isDark} setIsDark={setIsDark} />
 
       
-        <main className="p-8 flex-1">
-          <Outlet />
+        <main className="p-8 flex-1  h-screen overflow-y-auto">
+          <Outlet context={{ isDark, setIsDark }} />
         </main>
       </div>
     </div>

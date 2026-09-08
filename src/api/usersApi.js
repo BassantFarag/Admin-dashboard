@@ -4,7 +4,7 @@ import api from './axios'
 export const getAllUsers=()=>api.get('/users/all');
 
 //add user
-export const addAllUser=(payload)=>api.post('/users/all',payload);
+export const addAllUser=(payload)=>api.post('/users/add',payload);
 
 //get user by id 
 export const getUserById=(id)=>api.get(`/users/${id}`);
