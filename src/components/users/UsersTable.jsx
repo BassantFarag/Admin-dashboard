@@ -164,7 +164,7 @@ const UsersTable = ({
                                     aria-label={`Edit ${user.username}`}
                                     command="show-modal"
                                     commandfor="edit-user-dialog"
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-info text-white transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-info text-bg-main transition hover:opacity-90"
                                 >
                                 <Pencil className="h-4 w-4" />
                                 </button>
@@ -173,7 +173,7 @@ const UsersTable = ({
                                     type="button"
                                     aria-label={`Verify ${user.username}`}
                                     onClick={() => handleChangeRole(user)}
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-success text-white transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-success text-bg-main transition hover:opacity-90"
                                 >
                                 <ShieldCheck className="h-4 w-4" />
                                 </button>
@@ -182,7 +182,7 @@ const UsersTable = ({
                                     type="button"
                                     aria-label={`Delete ${user.username}`}
                                     onClick={() => handleDeleteUser(user)}
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-danger text-white transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-danger text-bg-main transition hover:opacity-90"
                                 >
                                 <Trash2 className="h-4 w-4" />
                                 </button>

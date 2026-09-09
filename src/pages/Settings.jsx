@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
+import { useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const defaultPrefs = {
   emailNotifications: true,
@@ -33,20 +35,22 @@ const SettingsContent = () => {
   });
 
   const handleToggle = (key) => {
-    setPrefs((prev) => {
-      const updated = { ...prev, [key]: !prev[key] };
-      localStorage.setItem("user_prefs", JSON.stringify(updated));
-      return updated;
-    });
-  };
+  setPrefs((prev) => {
+    const updated = { ...prev, [key]: !prev[key] };
+    localStorage.setItem("user_prefs", JSON.stringify(updated));
+    return updated;
+  });
+  toast.success("Settings updated successfully.");
+};
 
   const handleSelectChange = (key, value) => {
-    setPrefs((prev) => {
-      const updated = { ...prev, [key]: value };
-      localStorage.setItem("user_prefs", JSON.stringify(updated));
-      return updated;
-    });
-  };
+  setPrefs((prev) => {
+    const updated = { ...prev, [key]: value };
+    localStorage.setItem("user_prefs", JSON.stringify(updated));
+    return updated;
+  });
+  toast.success("Settings updated successfully.");
+};
 
   const handleDarkModeToggle = () => {
     const next = !isDark;

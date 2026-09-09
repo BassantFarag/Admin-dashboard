@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import AuthContext from "../contexts/AuthContext";
 
 const Login = () => {
@@ -54,6 +55,7 @@ const Login = () => {
 
     try {
       await login(formData.email.trim(), formData.password);
+      toast.success("Logged in successfully! Welcome back.");
 
       navigate("/", { replace: true, state: { showLoginToast: true } });
       
@@ -63,6 +65,7 @@ const Login = () => {
         error?.response?.data?.error ||
         "Invalid email or password.";
       setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
