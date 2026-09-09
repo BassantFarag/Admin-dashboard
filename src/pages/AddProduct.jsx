@@ -5,7 +5,7 @@ import axios from "axios";
 import { createProduct } from "../api/productApi";
 import AddProductForm from "../components/addProductForm";
 import AddProductHeader from "../components/AddProductHeader";
-import iphoneImage from "../images/iphone_air__b5qmgl05ojyq_large.jpg";
+// import iphoneImage from "../images/iphone_air__b5qmgl05ojyq_large.jpg";
 
 
 const AddProduct = () => {

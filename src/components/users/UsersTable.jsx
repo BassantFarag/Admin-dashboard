@@ -76,7 +76,7 @@ const UsersTable = ({
     return (
         <>
             <div className="overflow-hidden rounded-2xl border border-border-custom bg-card shadow-sm">
-                <div className="overflow-y-auto max-h-[calc(100vh-300px)]">
+                <div className="overflow-y-auto max-h-[calc(100vh-100px)]">
                     <table className="w-full min-w-[700px]">
 
                     {/* Table Header */}
