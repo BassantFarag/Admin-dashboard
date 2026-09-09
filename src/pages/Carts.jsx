@@ -1,5 +1,5 @@
+import { getAllCarts } from '../api/cartsApi';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { 
   ShoppingBag, 
   ShoppingCart, 
@@ -12,6 +12,7 @@ import {
   Loader2
 } from 'lucide-react';
 
+
 const Carts = () => {
   const [carts, setCarts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,45 +22,18 @@ const Carts = () => {
   const [statusFilter, setStatusFilter] = useState('All');
   const [selectedCart, setSelectedCart] = useState(null);
 
-  // جلب البيانات الديناميكية من الـ API
   useEffect(() => {
     const fetchCarts = async () => {
       try {
         setLoading(true);
-        // استبدلي هذا الرابط بمسار الـ API الخاص بكِ
-        const response = await axios.get('/api/carts'); 
-        setCarts(response.data);
+        const res = await getAllCarts();
+        // ضبط البيانات حسب هيكلية الـ Response القادم من الـ Backend
+        const cartsData = res?.data?.carts || res?.data || [];
+        setCarts(Array.isArray(cartsData) ? cartsData : []);
       } catch (err) {
-        console.error("Error fetching carts:", err);
+        console.error("Error fetching admin carts:", err);
         setError("فشل في تحميل بيانات السلال من السيرفر.");
-        
-        // بيانات مؤقتة لتجربة التصميم في حال عدم اتصال الـ Backend
-        setCarts([
-          {
-            id: "CART-8091",
-            user: { name: "Ahmed Hassan", email: "ahmed@example.com", avatar: "A" },
-            itemsCount: 3,
-            totalPrice: 420.00,
-            status: "Abandoned",
-            lastUpdated: "10 mins ago",
-            items: [
-              { name: "Wireless Headphones", price: 120, quantity: 1 },
-              { name: "Smart Watch v2", price: 300, quantity: 1 }
-            ]
-          },
-          {
-            id: "CART-8092",
-            user: { name: "Sarah Ali", email: "sarah@example.com", avatar: "S" },
-            itemsCount: 1,
-            totalPrice: 85.50,
-            status: "Active",
-            lastUpdated: "2 mins ago",
-            items: [
-              { name: "Ergonomic Mouse", price: 85.50, quantity: 1 }
-            ]
-          }
-        ]);
-      } finally {
+      }finally {
         setLoading(false);
       }
     };
@@ -67,15 +41,14 @@ const Carts = () => {
     fetchCarts();
   }, []);
 
-  // حساب الإحصائيات ديناميكياً من البيانات المستقبلة
   const totalCartsCount = carts.length;
   const abandonedCartsCount = carts.filter(c => c.status === 'Abandoned').length;
-  const potentialRevenue = carts.reduce((acc, curr) => acc + (curr.totalPrice || 0), 0);
+  const potentialRevenue = carts.reduce((acc, curr) => acc + (Number(curr.totalPrice) || 0), 0);
+  const recoveryRate = totalCartsCount > 0 ? ((abandonedCartsCount / totalCartsCount) * 100).toFixed(1) : "0.0";
 
-  // فلترة وتصفية البيانات
   const filteredCarts = carts.filter(cart => {
-    const userName = cart.user?.name || '';
-    const cartId = cart.id || '';
+    const userName = cart.user?.name || cart.userName || '';
+    const cartId = cart.id || cart._id || '';
     
     const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           cartId.toLowerCase().includes(searchTerm.toLowerCase());
@@ -133,17 +106,14 @@ const Carts = () => {
           </div>
           <div>
             <p className="text-xs text-secondary font-medium">Recovery Rate</p>
-            <h3 className="text-xl font-bold mt-0.5">
-              {totalCartsCount > 0 ? ((abandonedCartsCount / totalCartsCount) * 100).toFixed(1) : 0}%
-            </h3>
+            <h3 className="text-xl font-bold mt-0.5">{recoveryRate}%</h3>
           </div>
         </div>
       </div>
 
-      {/* Filters & Table Wrapper */}
-      <div className="bg-card border border-border-custom rounded-3xl p-5 shadow-xl space-y-4">
+      {/* Filters & Table */}
+      <div className="bg-card border border-border-custom max-h-[500px] overflow-y-auto rounded-3xl p-5 shadow-xl space-y-4">
         
-        {/* Search & Filter Bar */}
         <div className="flex flex-col sm:flex-row gap-3 justify-between items-center">
           <div className="relative w-full sm:w-80">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-secondary" size={18} />
@@ -173,7 +143,6 @@ const Carts = () => {
           </div>
         </div>
 
-        {/* Loading / Table / Empty State */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-16 text-secondary gap-3">
             <Loader2 className="animate-spin text-active" size={32} />
@@ -181,7 +150,7 @@ const Carts = () => {
           </div>
         ) : filteredCarts.length === 0 ? (
           <div className="text-center py-12 text-secondary text-sm">
-            No carts found matching your criteria.
+            {error || "No carts found matching your criteria."}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -198,53 +167,58 @@ const Carts = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-custom">
-                {filteredCarts.map((cart) => (
-                  <tr key={cart.id} className="hover:bg-input/30 transition-colors">
-                    <td className="py-4 px-4 font-mono text-xs font-bold text-primary">{cart.id}</td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-active/20 text-active font-bold flex items-center justify-center text-xs">
-                          {cart.user?.avatar || cart.user?.name?.charAt(0) || 'U'}
+                {filteredCarts.map((cart) => {
+                  const displayId = cart.id || cart._id || 'N/A';
+                  const totalPrice = Number(cart.totalPrice) || 0;
+
+                  return (
+                    <tr key={displayId} className="hover:bg-input/30 transition-colors">
+                      <td className="py-4 px-4 font-mono text-xs font-bold text-primary">{displayId}</td>
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-active/20 text-active font-bold flex items-center justify-center text-xs">
+                            {cart.user?.avatar || cart.user?.name?.charAt(0) || 'U'}
+                          </div>
+                          <div>
+                            <p className="text-primary font-medium text-xs sm:text-sm">{cart.user?.name || 'Guest User'}</p>
+                            <p className="text-secondary text-[11px]">{cart.user?.email || 'N/A'}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-primary font-medium text-xs sm:text-sm">{cart.user?.name}</p>
-                          <p className="text-secondary text-[11px]">{cart.user?.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 font-medium text-primary">{cart.itemsCount || cart.items?.length || 0} items</td>
-                    <td className="py-4 px-4 font-bold text-primary">${cart.totalPrice?.toFixed(2)}</td>
-                    <td className="py-4 px-4">
-                      <span className={`px-3 py-1 rounded-xl text-[11px] font-semibold inline-block ${
-                        cart.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                        cart.status === 'Abandoned' ? 'bg-warning/10 text-warning border border-warning/20' :
-                        'bg-purple-500/10 text-purple-400 border border-purple-500/20'
-                      }`}>
-                        {cart.status}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 text-xs">{cart.lastUpdated}</td>
-                    <td className="py-4 px-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {cart.status === 'Abandoned' && (
+                      </td>
+                      <td className="py-4 px-4 font-medium text-primary">{cart.itemsCount || cart.items?.length || 0} items</td>
+                      <td className="py-4 px-4 font-bold text-primary">${totalPrice.toFixed(2)}</td>
+                      <td className="py-4 px-4">
+                        <span className={`px-3 py-1 rounded-xl text-[11px] font-semibold inline-block ${
+                          cart.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                          cart.status === 'Abandoned' ? 'bg-warning/10 text-warning border border-warning/20' :
+                          'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                        }`}>
+                          {cart.status || 'Active'}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-xs">{cart.lastUpdated || 'Recently'}</td>
+                      <td className="py-4 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          {cart.status === 'Abandoned' && (
+                            <button 
+                              title="Send Recovery Email"
+                              className="p-2 bg-input hover:bg-warning/20 hover:text-warning rounded-xl transition-colors cursor-pointer"
+                            >
+                              <Mail size={16} />
+                            </button>
+                          )}
                           <button 
-                            title="Send Recovery Email"
-                            className="p-2 bg-input hover:bg-warning/20 hover:text-warning rounded-xl transition-colors cursor-pointer"
+                            onClick={() => setSelectedCart(cart)}
+                            title="View Details"
+                            className="p-2 bg-input hover:bg-active/20 hover:text-active rounded-xl transition-colors cursor-pointer"
                           >
-                            <Mail size={16} />
+                            <Eye size={16} />
                           </button>
-                        )}
-                        <button 
-                          onClick={() => setSelectedCart(cart)}
-                          title="View Details"
-                          className="p-2 bg-input hover:bg-active/20 hover:text-active rounded-xl transition-colors cursor-pointer"
-                        >
-                          <Eye size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -263,25 +237,29 @@ const Carts = () => {
             </button>
 
             <div className="space-y-1">
-              <h3 className="text-lg font-bold text-primary">Cart Details ({selectedCart.id})</h3>
-              <p className="text-xs text-secondary">Belongs to: {selectedCart.user?.name}</p>
+              <h3 className="text-lg font-bold text-primary">Cart Details ({selectedCart.id || selectedCart._id})</h3>
+              <p className="text-xs text-secondary">Belongs to: {selectedCart.user?.name || 'Guest'}</p>
             </div>
 
             <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
-              {selectedCart.items?.map((item, idx) => (
-                <div key={idx} className="flex justify-between items-center p-3 bg-input rounded-2xl border border-border-custom text-xs">
-                  <div>
-                    <p className="font-semibold text-primary">{item.name}</p>
-                    <p className="text-secondary">Qty: {item.quantity}</p>
+              {selectedCart.items?.map((item, idx) => {
+                const itemPrice = Number(item.price) || Number(item.product?.price) || 0;
+                const qty = Number(item.quantity) || 1;
+                return (
+                  <div key={idx} className="flex justify-between items-center p-3 bg-input rounded-2xl border border-border-custom text-xs">
+                    <div>
+                      <p className="font-semibold text-primary">{item.name || item.product?.name || 'Product'}</p>
+                      <p className="text-secondary">Qty: {qty}</p>
+                    </div>
+                    <p className="font-bold text-primary">${(itemPrice * qty).toFixed(2)}</p>
                   </div>
-                  <p className="font-bold text-primary">${(item.price * item.quantity).toFixed(2)}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="border-t border-border-custom pt-4 flex justify-between items-center">
               <span className="text-sm font-semibold text-secondary">Total Value:</span>
-              <span className="text-lg font-bold text-primary">${selectedCart.totalPrice?.toFixed(2)}</span>
+              <span className="text-lg font-bold text-primary">${(Number(selectedCart.totalPrice) || 0).toFixed(2)}</span>
             </div>
 
             <button 
