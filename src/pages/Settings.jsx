@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
-import { useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const defaultPrefs = {
