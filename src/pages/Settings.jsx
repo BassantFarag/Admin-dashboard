@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { useOutletContext, useNavigate } from "react-router-dom";
+import AuthContext from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const defaultPrefs = {
   emailNotifications: true,
@@ -10,14 +12,13 @@ const defaultPrefs = {
   timeZone: "(UTC+02:00) Cairo",
 };
 
-
-const mockUser = {
-  _id: "static-preview",
-  name: "Eman Mohamed",
-  email: "eman.mohamed@gmail.com",
-};
+const FALLBACK_AVATAR = "https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=";
 
 const SettingsContent = () => {
+  // 1. استدعاء بيانات المستخدم والـ Navigate
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const outletContext = useOutletContext() || {};
   const { isDark: contextIsDark, setIsDark: contextSetIsDark } = outletContext;
 
@@ -27,11 +28,10 @@ const SettingsContent = () => {
   const isDark = contextIsDark ?? localIsDark;
   const setIsDark = contextSetIsDark ?? setLocalIsDark;
 
-  const [user] = useState(mockUser);
   const [prefs, setPrefs] = useState(() => {
-  const saved = localStorage.getItem("user_prefs");
-  return saved ? JSON.parse(saved) : defaultPrefs;
-});
+    const saved = localStorage.getItem("user_prefs");
+    return saved ? JSON.parse(saved) : defaultPrefs;
+  });
 
   const handleToggle = (key) => {
   setPrefs((prev) => {
@@ -39,6 +39,7 @@ const SettingsContent = () => {
     localStorage.setItem("user_prefs", JSON.stringify(updated));
     return updated;
   });
+  toast.success("Settings updated successfully.");
 };
 
   const handleSelectChange = (key, value) => {
@@ -47,6 +48,7 @@ const SettingsContent = () => {
     localStorage.setItem("user_prefs", JSON.stringify(updated));
     return updated;
   });
+  toast.success("Settings updated successfully.");
 };
 
   const handleDarkModeToggle = () => {
@@ -55,34 +57,51 @@ const SettingsContent = () => {
     localStorage.setItem("theme", next ? "dark" : "light");
   };
 
+  // 2. التوجيه لصفحة تعديل البروفايل
   const handleEditProfile = () => {
-    console.log("Edit Profile clicked (static preview)");
+    navigate("/AdminProfile");
   };
+
+  const displayName = user?.name || user?.username || "Admin User";
+  const displayEmail = user?.email || "admin@example.com";
+  const avatarUrl = user?.avatar || `${FALLBACK_AVATAR}${encodeURIComponent(displayName)}`;
 
   return (
     <div className="space-y-6">
+      {/* Profile Section */}
       <div className="rounded-xl border border-border-custom bg-card p-5">
         <h3 className="text-sm font-bold text-primary mb-4">
           Profile Information
         </h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-active to-active-hover flex items-center justify-center text-white font-extrabold">
-              {(user.name || "U").charAt(0).toUpperCase()}
+            {/* عرض صورة المستخدم الحقيقية */}
+            <div className="w-11 h-11 rounded-full overflow-hidden border border-active/30 flex items-center justify-center bg-bg-main shadow-sm flex-shrink-0">
+              <img
+                src={avatarUrl}
+                alt={displayName}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = `${FALLBACK_AVATAR}${encodeURIComponent(displayName)}`;
+                }}
+              />
             </div>
             <div>
-              <p className="font-semibold text-primary">{user.name}</p>
-              <p className="text-xs text-secondary">{user.email}</p>
+              <p className="font-semibold text-primary">{displayName}</p>
+              <p className="text-xs text-secondary">{displayEmail}</p>
             </div>
           </div>
           <button
             onClick={handleEditProfile}
-            className="px-4 py-2 rounded-lg text-sm font-semibold text-active bg-active-bg hover:bg-active/20 transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-active bg-active-bg hover:bg-active/20 transition-colors cursor-pointer"
           >
             Edit Profile
           </button>
         </div>
       </div>
+
+      {/* Account Preferences */}
       <div className="rounded-xl border border-border-custom bg-card p-5 space-y-5">
         <h3 className="text-sm font-bold text-primary">Account Preferences</h3>
 
@@ -137,7 +156,7 @@ const SettingsContent = () => {
         </div>
       </div>
 
-      {/*//////////////////////////*/}
+      {/* System Preferences */}
       <div className="rounded-xl border border-border-custom bg-card p-5 space-y-5">
         <h3 className="text-sm font-bold text-primary">System Preferences</h3>
 
@@ -191,7 +210,7 @@ const SettingsContent = () => {
         </div>
       </div>
 
-      {/* ////////////////*/}
+      {/* Other Settings */}
       <div className="rounded-xl border border-border-custom bg-card p-5 space-y-5">
         <h3 className="text-sm font-bold text-primary">Other Settings</h3>
 
@@ -214,7 +233,7 @@ const SettingsContent = () => {
               Add an extra layer of security to your account.
             </p>
           </div>
-          <button className="px-4 py-2 rounded-lg text-sm font-semibold text-active bg-active-bg hover:bg-active/20 transition-colors">
+          <button className="px-4 py-2 rounded-lg text-sm font-semibold text-active bg-active-bg hover:bg-active/20 transition-colors cursor-pointer">
             Enable
           </button>
         </div>
@@ -225,14 +244,15 @@ const SettingsContent = () => {
 
 const ToggleSwitch = ({ checked, onChange }) => (
   <button
+    type="button"
     onClick={onChange}
-    className={`w-11 h-6 rounded-full relative transition-colors ${
+    className={`w-11 h-6 rounded-full p-0.5 transition-colors cursor-pointer flex items-center ${
       checked ? "bg-active" : "bg-input border border-border-custom"
     }`}
   >
     <span
-      className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-        checked ? "translate-x-5" : "translate-x-0.5"
+      className={`w-5 h-5 rounded-full bg-white shadow-md transition-transform duration-200 ${
+        checked ? "translate-x-5" : "translate-x-0"
       }`}
     />
   </button>

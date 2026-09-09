@@ -13,7 +13,7 @@ import Settings from "../pages/Settings";
 import ProductView from "../pages/ProductView";
 import EditProductPage from "../pages/EditProductPage";
 import EditProduct from "../components/EditProduct";
-
+import AdminProfile from "../pages/AdminProfile";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
 
@@ -69,6 +69,10 @@ export const router = createBrowserRouter([
               {
                 path: "settings",
                 element: <Settings />,
+              },
+               {
+                path: "AdminProfile",
+                element: <AdminProfile  />,
               },
             ],
           },

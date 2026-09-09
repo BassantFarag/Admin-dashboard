@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { getProducts, searchProducts, updateProduct, deleteProduct } from '../api/productApi';
 import StatsCards from '../components/StatsCards';
 import ProductCard from '../components/ProductCard';
@@ -101,7 +102,7 @@ const Products = () => {
     const discountPrice = Number(formData.get ? formData.get('discountPrice') : formData.discountPrice || 0);
 
     if (discountPrice > price) {
-      alert('Validation Alert: The discount price cannot be higher than the original price.');
+      toast.warning('Discount price cannot exceed the original price.');
       return;
     }
 
@@ -123,6 +124,7 @@ const Products = () => {
       );
 
       setEditingItem(null);
+      toast.success('Product updated successfully!');
 
       setTimeout(() => {
         fetchAllItems();
@@ -131,24 +133,12 @@ const Products = () => {
     } catch (err) {
       console.error('Failed to update product on server:', err?.response?.data || err);
 
-      const serverError = err?.response?.data;
-      let detailedMsg = 'Check The Server Error, Please Try Again Later.';
+      const message =
+        err?.response?.data?.message ||
+        (typeof err?.response?.data === 'string' ? err.response.data : null) ||
+        'Failed to update product.';
 
-      if (serverError) {
-        if (typeof serverError === 'string') {
-          detailedMsg = serverError;
-        } else if (serverError.message) {
-          detailedMsg = serverError.message;
-        } else if (serverError.errors) {
-          detailedMsg = Array.isArray(serverError.errors)
-            ? serverError.errors.map((e) => e.message || e).join(' | ')
-            : Object.values(serverError.errors).map((e) => e.message || e).join(' | ');
-        } else {
-          detailedMsg = JSON.stringify(serverError);
-        }
-      }
-
-      alert(`Error in The Server \n${detailedMsg}`);
+      toast.error(message);
     } finally {
       setIsSaving(false);
     }
@@ -161,9 +151,10 @@ const Products = () => {
       await deleteProduct(itemId);
       setAllItems((prev) => prev.filter((p) => (p._id || p.id) !== itemId));
       setShownItems((prev) => prev.filter((p) => (p._id || p.id) !== itemId));
+      toast.success('Product deleted successfully.');
     } catch (err) {
       console.error('Failed to delete product:', err);
-      alert('Failed to delete product.');
+      toast.error('Failed to delete product. Please try again.');
     } finally {
       setDeletingId(null);
     }

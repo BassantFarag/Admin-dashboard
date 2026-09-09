@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { ImagePlus, X, Sparkles } from "lucide-react";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { createProduct } from "../api/productApi";
 import AddProductForm from "../components/addProductForm";
 import AddProductHeader from "../components/AddProductHeader";
-import iphoneImage from "../images/iphone_air__b5qmgl05ojyq_large.jpg";
+// import iphoneImage from "../images/iphone_air__b5qmgl05ojyq_large.jpg";
 
 
 const AddProduct = () => {
@@ -44,7 +45,7 @@ const AddProduct = () => {
     const selectedFiles = Array.from(e.target.files);
 
     if (images.length + selectedFiles.length > 5) {
-      alert("Sorry, you can upload no more than 5 photos of the product!");
+      toast.warning("You can upload a maximum of 5 images.");
     }
 
     setImages((prevImages) => [...prevImages, ...selectedFiles].slice(0, 5));
@@ -81,13 +82,14 @@ const AddProduct = () => {
      const response = await createProduct(body);
 
      
-      alert("Product created successfully!");
+      toast.success("Product created successfully!");
 
    
       setImages([]);
     } catch (error) {
      console.error("Error creating product:", error.response?.data || error.message);
-      alert("Failed to create product!");
+      const message = error.response?.data?.message || "Failed to create product.";
+      toast.error(message);
     }
   };
 

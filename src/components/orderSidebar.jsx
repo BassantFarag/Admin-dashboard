@@ -48,7 +48,7 @@ const OrderSidebar = ({ order, onClose, onOrderUpdated }) => {
 
       await updateOrderStatus(order._id, payload);
 
-      toast.success(`status updated to "${status}"`);
+      toast.success(`Order status updated to "${status}" successfully.`);
 
       setIsOpen(false);
 
@@ -63,7 +63,7 @@ const OrderSidebar = ({ order, onClose, onOrderUpdated }) => {
     } catch (error) {
       console.error("Update order error:", error);
 
-      const message = error.response?.data?.message || "Failed to update order";
+      const message = error.response?.data?.message || "Failed to update order status.";
 
       toast.error(message);
     } finally {
