@@ -170,7 +170,7 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
             👁 View
           </button>
           <button
-            onClick={() => navigate(`/products/edit/${itemId}`)}
+            onClick={() => navigate(`/products/edit/${itemId}`)} 
             className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
           >
             ✏ Edit

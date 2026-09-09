@@ -11,6 +11,7 @@ import Orders from "../pages/Orders";
 import Carts from "../pages/Carts";
 import Settings from "../pages/Settings";
 import ProductView from "../pages/ProductView";
+import EditProductPage from "../pages/EditProductPage";
 import EditProduct from "../components/EditProduct";
 import AdminProfile from "../pages/AdminProfile";
 import ProtectedRoute from "./ProtectedRoute";
@@ -79,6 +80,10 @@ export const router = createBrowserRouter([
       },
     ],
   },
+      {
+      path: "/products/edit/:id", 
+      element: <EditProductPage />
+    },
 
   {
     path: "/unauthorized",
