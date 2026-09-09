@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const defaultPrefs = {
   emailNotifications: true,
@@ -39,6 +40,7 @@ const SettingsContent = () => {
     localStorage.setItem("user_prefs", JSON.stringify(updated));
     return updated;
   });
+  toast.success("Settings updated successfully.");
 };
 
   const handleSelectChange = (key, value) => {
@@ -47,6 +49,7 @@ const SettingsContent = () => {
     localStorage.setItem("user_prefs", JSON.stringify(updated));
     return updated;
   });
+  toast.success("Settings updated successfully.");
 };
 
   const handleDarkModeToggle = () => {

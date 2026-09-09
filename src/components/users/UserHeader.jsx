@@ -79,8 +79,8 @@ const UserHeader = ({ onAddUser, onSearchChange }) => {
             <Input placeholder="Search users..." leftIcon={<Search className="h-5 w-5" />} onChange={onSearchInputChange} />
           </div>
 
-          <Button className='bg-active text-primary hover:bg-active-hover' onClick={() => setIsOpen(!isOpen)} leftIcon={<UserPlus className="h-5 w-5" />} rightIcon={<ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />}>
-            Add User
+          <Button className='header-btn-primary' onClick={() => setIsOpen(!isOpen)} leftIcon={<UserPlus className="h-5 w-5 header-btn-icon" />} rightIcon={<ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} header-btn-icon`} />}>
+            <span className="header-btn-text">Add User</span>
           </Button>
         </div>
       </div>
@@ -90,7 +90,7 @@ const UserHeader = ({ onAddUser, onSearchChange }) => {
           <div className="overflow-hidden rounded-2xl border border-border-custom bg-card shadow-xl">
             <div className="flex items-start justify-between gap-4 bg-active-bg px-6 py-5">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-active text-white">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-active text-bg-main">
                   <UserPlus className="h-5 w-5" />
                 </div>
 
@@ -141,12 +141,12 @@ const UserHeader = ({ onAddUser, onSearchChange }) => {
               </div>
 
               <div className="flex flex-col gap-4 border-t border-border-custom pt-5 sm:flex-row sm:items-center sm:justify-end">
-                <Button type="reset" className="w-full border border-border-custom bg-active-bg text-active shadow-none hover:bg-active hover:text-white sm:w-auto">
-                  Clear
+                <Button type="reset" className="header-btn-clear w-full border border-border-custom shadow-none sm:w-auto">
+                  <span className="header-btn-text">Clear</span>
                 </Button>
 
-                <Button type="submit" className="w-full sm:w-auto bg-active text-primary hover:bg-active-hover" leftIcon={<UserPlus className="h-5 w-5" />}>
-                  Create User
+                <Button type="submit" className="header-btn-primary w-full sm:w-auto" leftIcon={<UserPlus className="h-5 w-5 header-btn-icon" />}>
+                  <span className="header-btn-text">Create User</span>
                 </Button>
               </div>
             </form>

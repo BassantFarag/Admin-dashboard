@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { toast } from 'react-toastify';
 
 const EditPopup = ({ item, onClose, onSave, isSaving, isDark = true }) => {
   const fileInputRef = useRef(null);
@@ -71,13 +72,13 @@ const EditPopup = ({ item, onClose, onSave, isSaving, isDark = true }) => {
 
     const totalImages = existingImages.length + newImages.length + files.length;
     if (totalImages > 5) {
-      alert('You can upload maximum 5 images.');
+      toast.warning('You can upload maximum 5 images.');
       return;
     }
 
     const validFiles = files.filter((file) => file.type.startsWith('image/'));
     if (validFiles.length !== files.length) {
-      alert('Please select image files only.');
+      toast.warning('Please select image files only.');
       return;
     }
 
@@ -104,12 +105,12 @@ const EditPopup = ({ item, onClose, onSave, isSaving, isDark = true }) => {
 
   const handleSaveClick = () => {
     if (!formData.name.trim()) {
-      alert('Please enter product name');
+      toast.warning('Please enter product name');
       return;
     }
 
     if (!formData.subcategory.trim()) {
-      alert('Please enter a subcategory');
+      toast.warning('Please enter a subcategory');
       return;
     }
 
