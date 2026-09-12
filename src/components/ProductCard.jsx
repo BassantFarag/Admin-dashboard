@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Star, Eye, Edit, Zap, Trash2, Loader2 } from 'lucide-react';
+import { Star } from 'lucide-react';
+
+const FALLBACK_IMAGE = 'https://placehold.co/600x400/1e293b/94a3b8?text=No+Image+Uploaded';
 
 const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
   const navigate = useNavigate();
@@ -8,7 +10,9 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
 
   const extractImageUrl = (img) => {
     if (!img) return null;
-    if (typeof img === 'string') return img;
+    if (typeof img === 'string') {
+      return img;
+    }
     if (typeof img === 'object') {
       return img.url || img.secure_url || img.path || img.src || null;
     }
@@ -59,8 +63,7 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
   return (
     <div className="group bg-card border border-border-custom rounded-2xl overflow-hidden flex flex-col w-full shadow-lg transition-all duration-300 hover:border-active hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:-translate-y-1">
 
-      {/* Image Container */}
-      <div className="relative w-full h-[180px] xs:h-[210px] sm:h-[230px] bg-bg-main overflow-hidden">
+      <div className="relative w-full h-[230px] bg-bg-main overflow-hidden">
         <img
           src={imagesList[currentImageIndex] || FALLBACK_IMAGE}
           alt={item.name || item.title || 'Product'}
@@ -89,13 +92,13 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
         )}
 
         {(item.isFeatured || item.featured) && (
-          <span className="absolute top-2.5 left-2.5 bg-active text-bg-main text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
-            <Star className="text-black fill-black" size={12} /> Featured
+          <span className="absolute top-2.5 left-2.5 bg-active text-bg-main text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow">
+            <Star className="text-black" size={22} /> Featured
           </span>
         )}
 
         <span
-          className={`absolute bottom-3 right-3 text-[10px] sm:text-[11px] font-medium px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full backdrop-blur-md ${
+          className={`absolute bottom-3 right-3 text-[11px] font-medium px-3 py-1 rounded-full backdrop-blur-md ${
             item.stock > 0
               ? 'bg-black/60 text-active border border-active/30'
               : 'bg-black/60 text-danger border border-danger/30'
@@ -119,13 +122,13 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
       </div>
 
       {/* Content */}
-      <div className="p-3.5 sm:p-5 flex flex-col flex-1 justify-between gap-3">
+      <div className="p-5 flex flex-col flex-1 justify-between">
         <div>
-          <h3 className="text-base sm:text-lg font-bold text-primary mb-1 line-clamp-1">
+          <h3 className="text-lg font-bold text-primary mb-1 line-clamp-1">
             {item.name || item.title}
           </h3>
 
-          <p className="text-[9px] sm:text-[10px] font-bold text-secondary uppercase tracking-wider mb-1.5 sm:mb-2 line-clamp-1">
+          <p className="text-[10px] font-bold text-secondary uppercase tracking-wider mb-2">
             {[item.category, item.subCategory || item.subcategory, item.brand]
               .filter(Boolean)
               .join(' • ')}
@@ -136,20 +139,20 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
           </p>
 
           <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-xl sm:text-2xl font-black text-active">${item.price}</span>
+            <span className="text-2xl font-black text-active">${item.price}</span>
             {(item.discount > 0 || item.discountPrice > 0) && (
-              <span className="text-[11px] sm:text-xs font-semibold text-secondary line-through">
+              <span className="text-xs font-semibold text-secondary line-through">
                 -${item.discount || item.discountPrice} off
               </span>
             )}
           </div>
 
           {Array.isArray(item.tags) && item.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3 sm:mb-4">
+            <div className="flex flex-wrap gap-1.5 mb-5">
               {item.tags.map((tag, idx) => (
                 <span
                   key={idx}
-                  className="bg-bg-main border border-border-custom text-secondary text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded"
+                  className="bg-bg-main border border-border-custom text-secondary text-[10px] px-2 py-0.5 rounded"
                 >
                   #{typeof tag === 'object' ? tag.name || tag.label : tag}
                 </span>
@@ -158,48 +161,32 @@ const ProductCard = ({ item, onQuickEdit, onDelete, isDeleting }) => {
           )}
         </div>
 
-        {/* Responsive Actions Grid */}
-        <div className="grid grid-cols-2 gap-1.5 sm:gap-2 pt-3 border-t border-border-custom">
+        {/* Actions Grid */}
+        <div className="grid grid-cols-2 gap-2 pt-3 border-t border-border-custom">
           <button
             onClick={() => navigate(`/products/${itemId}`)}
-            className="py-1.5 px-2 bg-input hover:bg-border-custom text-primary rounded-lg text-[11px] sm:text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
           >
-            <Eye className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">View</span>
+            👁 View
           </button>
-
           <button
             onClick={() => navigate(`/products/edit/${itemId}`)} 
-            className="py-1.5 px-2 bg-input hover:bg-border-custom text-primary rounded-lg text-[11px] sm:text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
           >
-            <Edit className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Edit</span>
+            ✏ Edit
           </button>
-
           <button
             onClick={() => onQuickEdit(item)}
-            className="py-1.5 px-2 bg-input hover:bg-border-custom text-primary rounded-lg text-[11px] sm:text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
+            className="py-1.5 bg-input hover:bg-border-custom text-primary rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 cursor-pointer"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20 shrink-0" />
-            <span className="truncate">Quick Edit</span>
+            ⚡ Quick Edit
           </button>
-
           <button
             onClick={() => onDelete(itemId)}
             disabled={isDeleting}
-            className="py-1.5 px-2 bg-danger/10 hover:bg-danger/20 text-danger rounded-lg text-[11px] sm:text-xs font-medium transition-colors flex items-center justify-center gap-1 disabled:opacity-50 cursor-pointer"
+            className="py-1.5 bg-danger/10 hover:bg-danger/20 text-danger rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1 disabled:opacity-50 cursor-pointer"
           >
-            {isDeleting ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-500 shrink-0" />
-                <span className="truncate">Deleting...</span>
-              </>
-            ) : (
-              <>
-                <Trash2 className="w-3.5 h-3.5 shrink-0" />
-                <span className="truncate">Delete</span>
-              </>
-            )}
+            {isDeleting ? '...' : '🗑 Delete'}
           </button>
         </div>
       </div>

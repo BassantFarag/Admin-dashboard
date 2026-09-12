@@ -7,6 +7,7 @@ import ProductCard from '../components/ProductCard';
 import EditPopup from '../components/EditPopup';
 import Loading from '../components/Loading';
 
+
 const Products = () => {
   const navigate = useNavigate();
   const [allItems, setAllItems] = useState([]);
@@ -172,11 +173,11 @@ const Products = () => {
   }
 
   return (
-    <div className="p-4 sm:p-6 min-h-screen bg-bg-main text-primary">
+    <div className="p-6 min-h-screen bg-bg-main text-primary">
       {/* Header Bar */}
-      <div className="bg-card border border-border-custom rounded-2xl p-4 sm:p-5 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
+      <div className="bg-card border border-border-custom rounded-2xl p-5 px-6 flex items-center justify-between mb-5">
         <div className="flex items-center gap-4">
-          <div className="w-11 h-11 border border-border-custom rounded-xl flex items-center justify-center bg-bg-main text-active shrink-0">
+          <div className="w-11 h-11 border border-border-custom rounded-xl flex items-center justify-center bg-bg-main text-active">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
@@ -185,12 +186,12 @@ const Products = () => {
             <span className="text-[11px] font-bold text-secondary tracking-[1.5px] block">
               PRODUCT DASHBOARD
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-primary mt-0.5">Products</h1>
+            <h1 className="text-3xl font-extrabold text-primary mt-0.5">Products</h1>
           </div>
         </div>
         <button
           onClick={() => navigate('/add-product')}
-          className="w-full sm:w-auto justify-center bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
+          className="bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
         >
           + Add Product
         </button>
@@ -208,9 +209,9 @@ const Products = () => {
 
       {/* Search & Filter Section */}
       <div className="bg-card border border-border-custom rounded-2xl p-3 mb-6">
-        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+        <div className="flex gap-3 items-center">
           <div className="flex-1 flex items-center bg-bg-main border border-border-custom rounded-xl px-4 py-2.5">
-            <svg className="w-5 h-5 text-secondary mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-secondary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -223,28 +224,26 @@ const Products = () => {
             />
           </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`flex-1 sm:flex-none justify-center border px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer ${
-                showFilters
-                  ? 'bg-bg-main border-active text-primary'
-                  : 'bg-bg-main border-border-custom text-secondary hover:text-primary'
-              }`}
-            >
-              <svg className="w-4 h-4 text-active shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-              </svg>
-              Filters
-            </button>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`border px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer ${
+              showFilters
+                ? 'bg-bg-main border-active text-primary'
+                : 'bg-bg-main border-border-custom text-secondary hover:text-primary'
+            }`}
+          >
+            <svg className="w-4 h-4 text-active" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+            Filters
+          </button>
 
-            <button
-              onClick={handleSearch}
-              className="flex-1 sm:flex-none justify-center bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
-            >
-              Search
-            </button>
-          </div>
+          <button
+            onClick={handleSearch}
+            className="bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
+          >
+            Search
+          </button>
         </div>
 
         {/* Filters Panel */}
@@ -286,7 +285,7 @@ const Products = () => {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
         {shownItems.map((item, index) => {
           const id = item._id || item.id;
           return (

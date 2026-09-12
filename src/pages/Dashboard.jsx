@@ -1,10 +1,11 @@
-import { ShoppingCart, Clock3, CircleDollarSign, ChartColumn, Package, Users } from "lucide-react";
+import { ShoppingCart, Clock3, CircleDollarSign, ChartColumn, Package, Users, LayoutDashboard } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import api from "../api/axios";
 import ThreatChart from "../components/ThreatChart";
+import PageHeroHeader from "../components/ui/PageHeroHeader";
 import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
@@ -201,20 +202,12 @@ const getDashboard = async () => {
 
       <div className="mx-auto w-full max-w-[1600px] space-y-4 lg:space-y-5">
         <motion.section variants={cardVariants}>
-          <div className="relative overflow-hidden rounded-2xl border border-border-custom bg-card px-4 py-3.5 shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:px-5 sm:py-4 lg:px-6 lg:py-5">
-            <div className="absolute -right-20 -top-15 h-48 w-48 rounded-full bg-active/10 blur-3xl" />
-            <div className="relative">
-              <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-active sm:text-[11px]">
-                Admin overview
-              </p>
-              <h1 className="mt-1 text-lg font-extrabold tracking-tight text-primary sm:text-xl lg:text-2xl">
-                Real-time commerce health
-              </h1>
-              <p className="mt-1 max-w-2xl text-xs leading-4 text-secondary sm:text-sm">
-                Monitor your storefront with AI-style clarity and live API metrics.
-              </p>
-            </div>
-          </div>
+          <PageHeroHeader
+            icon={<LayoutDashboard className="h-5 w-5" />}
+            eyebrow="Admin overview"
+            title="Real-time commerce health"
+            subtitle="Monitor your storefront with AI-style clarity and live API metrics."
+          />
         </motion.section>
       
         <motion.section
@@ -265,7 +258,7 @@ const getDashboard = async () => {
       
         <section className="grid grid-cols-1 gap-4 xl:grid-cols-12">
           <div className="xl:col-span-8 shadow-[0_4px_20px_rgba(0,0,0,0.08)] rounded-2xl bg-card">
-            <ThreatChart />
+            <ThreatChart dailyRevenue={dashboard.dailyRevenue} />
           </div>
 
           <div className="xl:col-span-4 rounded-2xl border border-border-custom bg-card p-4 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.08)] flex flex-col justify-between xl:min-h-[420px]">

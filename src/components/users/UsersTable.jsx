@@ -1,26 +1,5 @@
-/*
- * Users Table
- *
- * File Purpose:
- * Renders the users list table and the user editing dialog modal.
- *
- * Responsibilities:
- * - Displays user information, role, verification status, and action buttons.
- * - Encapsulates local state for editing user profiles (selectedUser, editFormData).
- * - Forwards user actions (update, change role, delete) to parent callbacks.
- *
- * Data Source:
- * - Receives `users` array (filtered list) as props from Users.jsx.
- *
- * Relationship to Other Components:
- * - Child component of `Users.jsx`.
- * - Uses shared UI components `Input` and `Button`.
- *
- * What It Must NOT Manage:
- * - Does not hold or mutate the shared users state directly.
- * - Does not perform direct API requests (defers to parent callbacks).
- * - Page loading is handled at the page level in `Users.jsx`.
- */
+// Renders the users table and the edit-user dialog. Pure presentational
+// component: state changes are forwarded to Users.jsx via callback props.
 
 import { useState } from "react";
 import { Pencil, ShieldCheck, Trash2, X } from "lucide-react";
@@ -76,7 +55,7 @@ const UsersTable = ({
     return (
         <>
             <div className="overflow-hidden rounded-2xl border border-border-custom bg-card shadow-sm">
-                <div className="overflow-y-auto max-h-[calc(100vh-100px)]">
+                <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-100px)]">
                     <table className="w-full min-w-[700px]">
 
                     {/* Table Header */}
@@ -113,7 +92,7 @@ const UsersTable = ({
                             <div className="flex items-center gap-3">
                                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-input text-secondary">
                                 <span className="text-lg font-semibold">
-                                    {user.username.charAt(0).toUpperCase()}
+                                    {user.username?.charAt(0)?.toUpperCase() || "?"}
                                 </span>
                                 </div>
 
@@ -164,16 +143,16 @@ const UsersTable = ({
                                     aria-label={`Edit ${user.username}`}
                                     command="show-modal"
                                     commandfor="edit-user-dialog"
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-info text-bg-main transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-input text-secondary transition hover:bg-active-bg hover:text-active"
                                 >
                                 <Pencil className="h-4 w-4" />
                                 </button>
 
                                 <button
                                     type="button"
-                                    aria-label={`Verify ${user.username}`}
+                                    aria-label={`Toggle admin role for ${user.username}`}
                                     onClick={() => handleChangeRole(user)}
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-success text-bg-main transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-active-bg text-active transition hover:bg-active hover:text-bg-main"
                                 >
                                 <ShieldCheck className="h-4 w-4" />
                                 </button>
@@ -182,7 +161,7 @@ const UsersTable = ({
                                     type="button"
                                     aria-label={`Delete ${user.username}`}
                                     onClick={() => handleDeleteUser(user)}
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-danger text-bg-main transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-danger/10 text-danger transition hover:bg-danger hover:text-bg-main"
                                 >
                                 <Trash2 className="h-4 w-4" />
                                 </button>
