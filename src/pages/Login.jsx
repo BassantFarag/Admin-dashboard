@@ -5,17 +5,35 @@ import AuthContext from "../contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login, user, isLoading } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+
+  // Match the same theme source/persistence DashboardLayout uses, so the
+  // login screen respects the user's saved preference instead of always
+  // forcing dark mode, and any toggle here carries over after login.
+  const [darkMode, setDarkMode] = useState(() => {
+    return (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
+    localStorage.theme = darkMode ? "dark" : "light";
   }, [darkMode]);
+
+  // If the user is already authenticated, there's nothing to do on /login.
+  useEffect(() => {
+    if (!isLoading && user) {
+      navigate("/", { replace: true });
+    }
+  }, [isLoading, user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -216,6 +234,9 @@ const Login = () => {
           <form onSubmit={handleSubmit}>
             {/* Email */}
             <div className="mb-6">
+              <label htmlFor="email" className="sr-only">
+                Email
+              </label>
               <div
                 className={`flex items-center gap-3 rounded-lg border-b px-3 py-2.5 ${
                   darkMode ? "border-white/15 bg-black" : "border-black/15"
@@ -264,6 +285,9 @@ const Login = () => {
 
             {/* Password */}
             <div className="mb-8">
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
               <div
                 className={`flex items-center gap-3 rounded-lg border-b px-3 py-2.5 ${
                   darkMode ? "border-white/15 bg-black" : "border-black/15"

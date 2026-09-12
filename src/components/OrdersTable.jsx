@@ -6,32 +6,32 @@ const SkeletonRow = () => (
   <tr className="animate-pulse border-b border-border-custom/30">
     {/* Order ID Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-24 bg-[#2a2f3d] rounded-full"></div>
+      <div className="h-3.5 w-24 bg-border-custom/40 rounded-full"></div>
     </td>
 
     {/* Customer Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-32 bg-[#2a2f3d] rounded-full"></div>
+      <div className="h-3.5 w-32 bg-border-custom/40 rounded-full"></div>
     </td>
 
     {/* Date Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-20 bg-[#2a2f3d] rounded-full"></div>
+      <div className="h-3.5 w-20 bg-border-custom/40 rounded-full"></div>
     </td>
 
     {/* Status Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-28 bg-[#2a2f3d] rounded-full"></div>
+      <div className="h-3.5 w-28 bg-border-custom/40 rounded-full"></div>
     </td>
 
     {/* Payment Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-24 bg-[#2a2f3d] rounded-full"></div>
+      <div className="h-3.5 w-24 bg-border-custom/40 rounded-full"></div>
     </td>
 
     {/* Total Price Skeleton */}
     <td className="py-5 px-6 flex justify-end">
-      <div className="h-3.5 w-20 bg-[#2a2f3d] rounded-full"></div>
+      <div className="h-3.5 w-20 bg-border-custom/40 rounded-full"></div>
     </td>
   </tr>
 );
