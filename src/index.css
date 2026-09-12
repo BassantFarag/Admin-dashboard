@@ -120,6 +120,19 @@ body:not(.dark) ::-webkit-scrollbar-track {
     .header-btn-clear   → Clear
    ========================================================= */
 
+@keyframes btn-shine-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  60%,
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+.animate-btn-shine {
+  animation: btn-shine-sweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 @keyframes header-bg-flow {
   0% {
     background-position: 0% 50%;
