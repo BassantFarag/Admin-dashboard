@@ -57,9 +57,13 @@ const SettingsContent = () => {
     localStorage.setItem("theme", next ? "dark" : "light");
   };
 
-  // 2. التوجيه لصفحة تعديل البروفايل
   const handleEditProfile = () => {
     navigate("/AdminProfile");
+  };
+
+  // Placeholder until 2FA is wired up to the backend — avoids a dead, non-functional button.
+  const handleEnable2FA = () => {
+    toast.info("Two-factor authentication is coming soon.");
   };
 
   const displayName = user?.name || user?.username || "Admin User";
@@ -75,7 +79,7 @@ const SettingsContent = () => {
         </h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* عرض صورة المستخدم الحقيقية */}
+            {}
             <div className="w-11 h-11 rounded-full overflow-hidden border border-active/30 flex items-center justify-center bg-bg-main shadow-sm flex-shrink-0">
               <img
                 src={avatarUrl}
@@ -233,7 +237,10 @@ const SettingsContent = () => {
               Add an extra layer of security to your account.
             </p>
           </div>
-          <button className="px-4 py-2 rounded-lg text-sm font-semibold text-active bg-active-bg hover:bg-active/20 transition-colors cursor-pointer">
+          <button
+            onClick={handleEnable2FA}
+            className="px-4 py-2 rounded-lg text-sm font-semibold text-active bg-active-bg hover:bg-active/20 transition-colors cursor-pointer"
+          >
             Enable
           </button>
         </div>

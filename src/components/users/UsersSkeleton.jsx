@@ -1,24 +1,3 @@
-/*
- * Users Page Skeleton
- *
- * File Purpose:
- * Renders a full-page animated skeleton loader for the entire Users page while
- * asynchronous operations are pending.
- *
- * Responsibilities:
- * - Provides visual shimmer placeholder for the complete Users page UI (Header, Stat Cards, and Table).
- * - Prevents layout shift by closely mirroring the dimensions and grid structure of the live page.
- * - Utilizes `react-loading-skeleton` for smooth animated shimmer effects across the whole page.
- *
- * Data & Logic:
- * - Contains NO users data or business logic.
- * - Purely a presentational loading placeholder component.
- *
- * Relationship to Other Components:
- * - Rendered by `Users.jsx` when `state.isLoading === true`.
- * - Composes `UsersTableSkeleton` for the table area.
- */
-
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import UsersTableSkeleton from './UsersTableSkeleton'

@@ -1,7 +1,6 @@
-import StatusBadge from "./StatusBadge"; // إعادة تفعيل الـ import
+import StatusBadge from "./StatusBadge"; 
 import { PackageX, User } from "lucide-react";
 
-// مكون Skeleton مميز بنفس شكل الخطوط الأفقية المدورة
 const SkeletonRow = () => (
   <tr className="animate-pulse border-b border-border-custom/30">
     {/* Order ID Skeleton */}
@@ -55,12 +54,10 @@ function OrdersTable({ orders = [], isLoading = false , onOrderClick  }) {
 
           <tbody className="divide-y divide-border-custom/50 text-sm">
             {isLoading ? (
-              // 1. حالة التحميل: عرض الـ Skeleton Rows
               Array.from({ length: 5 }).map((_, index) => (
                 <SkeletonRow key={index} />
               ))
             ) : orders.length > 0 ? (
-              // 2. حالة وجود طلبات: عرض البيانات
               orders.map((order) => {
                 const customerName =
                   order.user?.name ||
@@ -137,7 +134,6 @@ function OrdersTable({ orders = [], isLoading = false , onOrderClick  }) {
                 );
               })
             ) : (
-              // 3. حالة عدم وجود داتا (No Orders)
               <tr>
                 <td colSpan="6" className="py-16 text-center">
                   <div className="flex flex-col items-center justify-center gap-2">

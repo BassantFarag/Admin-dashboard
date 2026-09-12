@@ -1,27 +1,3 @@
-/*
- * Users Table
- *
- * File Purpose:
- * Renders the users list table and the user editing dialog modal.
- *
- * Responsibilities:
- * - Displays user information, role, verification status, and action buttons.
- * - Encapsulates local state for editing user profiles (selectedUser, editFormData).
- * - Forwards user actions (update, change role, delete) to parent callbacks.
- *
- * Data Source:
- * - Receives `users` array (filtered list) as props from Users.jsx.
- *
- * Relationship to Other Components:
- * - Child component of `Users.jsx`.
- * - Uses shared UI components `Input` and `Button`.
- *
- * What It Must NOT Manage:
- * - Does not hold or mutate the shared users state directly.
- * - Does not perform direct API requests (defers to parent callbacks).
- * - Page loading is handled at the page level in `Users.jsx`.
- */
-
 import { useState } from "react";
 import { Pencil, ShieldCheck, Trash2, X } from "lucide-react";
 import Input from "../ui/input";
@@ -33,17 +9,14 @@ const UsersTable = ({
     onChangeRole, 
     onDeleteUser
 }) => {
-    // Local state for the user currently selected for editing.
     const [selectedUser, setSelectedUser] = useState(null);
 
-    // Local state for the edit user form fields.
     const [editFormData, setEditFormData] = useState({
         username: "",
         phone: "",
         avatar: "",
     });
 
-    // Open the edit modal and populate the form fields with the selected user's data.
     const handleEditUser = (user) => {
         setSelectedUser(user);
 
@@ -54,21 +27,17 @@ const UsersTable = ({
         });
     };
 
-    // Forward the edited user data to the parent component's save handler.
     const handleSaveChanges = async (e) => {
         e.preventDefault();
         if (!selectedUser) return;
 
-        // Call the parent callback to execute the API request and update shared state.
         await onSaveChanges(selectedUser, editFormData, setSelectedUser);
     };
 
-    // Forward the role change request to the parent component's handler.
     const handleChangeRole = (user) => {
         onChangeRole(user);
     };
 
-    // Forward the delete request to the parent component's handler.
     const handleDeleteUser = (user) => {
         onDeleteUser(user);
     };
