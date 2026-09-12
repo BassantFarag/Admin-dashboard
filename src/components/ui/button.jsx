@@ -8,6 +8,20 @@ const Button = ({
     }) => {
 
     return (
+        <>
+            <style>{`
+                @keyframes btn-shine-sweep {
+                    0% {
+                        transform: translateX(-150%) skewX(-25deg);
+                    }
+                    60%, 100% {
+                        transform: translateX(250%) skewX(-25deg);
+                    }
+                }
+                .animate-btn-shine {
+                    animation: btn-shine-sweep 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                }
+            `}</style>
             <button
             type={type}
             className={`
@@ -31,6 +45,7 @@ const Button = ({
             {children}
             {rightIcon}
             </button>
+        </>
     );
 };
 

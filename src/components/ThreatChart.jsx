@@ -1,18 +1,14 @@
 import { motion } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { Activity, TrendingUp } from "lucide-react";
+import { Activity, ShieldAlert } from "lucide-react";
 
-export const ThreatChart = ({ dailyRevenue = [] }) => {
-  // Normalize whatever shape the backend sends (date/day/_id, revenue/total, orders/count)
-  // into the {name, revenue, orders} shape this chart expects.
-  const data =
-    dailyRevenue?.length > 0
-      ? dailyRevenue.map((entry) => ({
-          name: entry.date || entry.day || entry._id || "",
-          revenue: Number(entry.revenue ?? entry.total ?? 0),
-          orders: Number(entry.orders ?? entry.count ?? 0),
-        }))
-      : [];
+export const ThreatChart = () => {
+  const data = [
+    { name: "Week 1", threats: 120, secured: 240 },
+    { name: "Week 2", threats: 180, secured: 310 },
+    { name: "Week 3", threats: 150, secured: 290 },
+    { name: "Week 4", threats: 210, secured: 380 },
+  ];
 
   return (
     <motion.div
@@ -25,14 +21,14 @@ export const ThreatChart = ({ dailyRevenue = [] }) => {
         <div>
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-active/25 bg-active-bg text-active">
-              <TrendingUp size={18} />
+              <ShieldAlert size={18} />
             </span>
             <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-active sm:text-xs">
-              Analytics & Revenue
+              Analytics & Security
             </p>
           </div>
           <h2 className="mt-1 text-xl font-extrabold text-primary sm:text-2xl">
-            Revenue & Orders Over Time
+            Monthly Threat Activity & System Security
           </h2>
         </div>
 
@@ -52,67 +48,60 @@ export const ThreatChart = ({ dailyRevenue = [] }) => {
           <span className="text-xs text-secondary">Live API Sync</span>
         </div>
 
-        {data.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-brand-active)" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="var(--color-brand-active)" stopOpacity={0.0} />
-                </linearGradient>
-                <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-status-success)" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="var(--color-status-success)" stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-main)" vertical={false} />
-              <XAxis
-                dataKey="name"
-                stroke="var(--color-text-secondary)"
-                fontSize={13}
-                tickLine={false}
-              />
-              <YAxis
-                stroke="var(--color-text-secondary)"
-                fontSize={13}
-                tickLine={false}
-                axisLine={false}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "var(--color-card-bg)",
-                  borderColor: "var(--color-border-main)",
-                  borderRadius: "12px",
-                  color: "var(--color-text-primary)",
-                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="revenue"
-                name="Revenue"
-                stroke="var(--color-brand-active)"
-                strokeWidth={2.5}
-                fillOpacity={1}
-                fill="url(#colorRevenue)"
-              />
-              <Area
-                type="monotone"
-                dataKey="orders"
-                name="Orders"
-                stroke="var(--color-status-success)"
-                strokeWidth={2.5}
-                fillOpacity={1}
-                fill="url(#colorOrders)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
-            <p className="text-sm font-semibold text-secondary">No revenue data yet</p>
-            <p className="text-xs text-secondary/70">Data will appear here once orders start coming in</p>
-          </div>
-        )}
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={data} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorThreats" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--color-brand-active)" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="var(--color-brand-active)" stopOpacity={0.0} />
+              </linearGradient>
+              <linearGradient id="colorSecured" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="var(--color-status-success)" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="var(--color-status-success)" stopOpacity={0.0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-main)" vertical={false} />
+            <XAxis 
+              dataKey="name" 
+              stroke="var(--color-text-secondary)" 
+              fontSize={13} 
+              tickLine={false} 
+            />
+            <YAxis 
+              stroke="var(--color-text-secondary)" 
+              fontSize={13} 
+              tickLine={false} 
+              axisLine={false} 
+            />
+            <Tooltip 
+              contentStyle={{
+                backgroundColor: "var(--color-card-bg)",
+                borderColor: "var(--color-border-main)",
+                borderRadius: "12px",
+                color: "var(--color-text-primary)",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+              }}
+            />
+            <Area 
+              type="monotone" 
+              dataKey="threats" 
+              name="Threats Detected" 
+              stroke="var(--color-brand-active)" 
+              strokeWidth={2.5} 
+              fillOpacity={1} 
+              fill="url(#colorThreats)" 
+            />
+            <Area 
+              type="monotone" 
+              dataKey="secured" 
+              name="Secured Items" 
+              stroke="var(--color-status-success)" 
+              strokeWidth={2.5} 
+              fillOpacity={1} 
+              fill="url(#colorSecured)" 
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </motion.div>
   );

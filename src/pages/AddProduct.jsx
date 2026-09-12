@@ -1,20 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { ImagePlus, X, Sparkles } from "lucide-react";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { createProduct } from "../api/productApi";
 import AddProductForm from "../components/addProductForm";
 import AddProductHeader from "../components/AddProductHeader";
-// import iphoneImage from "../images/iphone_air__b5qmgl05ojyq_large.jpg";
-
 
 const AddProduct = () => {
   const [images, setImages] = useState([]);
+  const fileInputRef = useRef(null); 
 
-    const productTips = [
+  const productTips = [
     "High-quality photos from multiple angles increase buyer trust.",
     "Products with 3+ tags get discovered more often in search.",
-    "Setting a discount price automatically shows a sale badge.",
     "Clear, specific product names rank higher than generic ones.",
   ];
 
@@ -45,7 +42,16 @@ const AddProduct = () => {
     const selectedFiles = Array.from(e.target.files);
 
     if (images.length + selectedFiles.length > 5) {
-      toast.warning("You can upload a maximum of 5 images.");
+      toast.warning("You can upload a maximum of 5 images.", {
+        position: 'top-right',
+        autoClose: 3000,
+        style: {
+          backgroundColor: 'var(--color-card-bg, #1e293b)',
+          color: 'var(--color-text-primary, #f8fafc)',
+          border: '1px solid #f59e0b',
+          borderRadius: '12px',
+        },
+      });
     }
 
     setImages((prevImages) => [...prevImages, ...selectedFiles].slice(0, 5));
@@ -54,7 +60,7 @@ const AddProduct = () => {
 
   // Delete image handler
   const deleteImage = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setImages((prevImages) => prevImages.filter((_ , i) => i !== index));
   };
 
   // Handle CreateProduct function with API Integration
@@ -62,32 +68,43 @@ const AddProduct = () => {
     try {
       const body = new FormData();
 
-    
       Object.keys(formData).forEach((key) => {
         const value = formData[key];
         if (value === undefined || value === null || value === "") return;
         if (key === "tags" && Array.isArray(value)) {
           value.forEach((tag) => body.append("tags", tag));
         } else {
-        body.append(key, value);
-      }
+          body.append(key, value);
+        }
       });
 
-      // integrate images into the FormData
       images.forEach((img) => {
         body.append("images", img);
       });
 
-      // Send the data to the API
-     const response = await createProduct(body);
+      
+      await createProduct(body);
 
      
-      toast.success("Product created successfully!");
+      toast.success("Product created successfully!", {
+        position: 'top-right',
+        autoClose: 3000,
+        style: {
+          backgroundColor: 'var(--color-card-bg, #1e293b)',
+          color: 'var(--color-text-primary, #f8fafc)',
+          border: '1px solid #10b981',
+          borderRadius: '12px',
+        },
+      });
 
-   
+  
       setImages([]);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
     } catch (error) {
-     console.error("Error creating product:", error.response?.data || error.message);
       const message = error.response?.data?.message || "Failed to create product.";
       toast.error(message);
     }
@@ -96,13 +113,10 @@ const AddProduct = () => {
   return (
     <div className="w-full min-h-screen bg-bg-main p-4 sm:p-6 text-primary">
       <AddProductHeader />
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mt-6">
-        
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Left Column: Gallery */}
         <section className="lg:col-span-5 bg-card border border-border-custom p-4 sm:p-6 rounded-3xl shadow-xl space-y-6">
-          
-          {/* Header */}
           <div className="flex gap-3 sm:gap-4 items-center">
             <div className="shrink-0 text-warning bg-warning/10 p-2.5 sm:p-3 rounded-2xl">
               <ImagePlus size={22} className="sm:w-6 sm:h-6" />
@@ -172,6 +186,7 @@ const AddProduct = () => {
             </p>
 
             <input
+              ref={fileInputRef}
               hidden
               type="file"
               accept="image/*"
@@ -180,65 +195,64 @@ const AddProduct = () => {
             />
           </label>
 
-          {/* Senior UX Note */}
-          {/* Product Tips - animated 3D card */}
-<div
-  ref={tipCardRef}
-  onMouseMove={handleTiltMove}
-  onMouseLeave={resetTilt}
-  style={{
-    transform: `perspective(600px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-    transition: "transform 0.15s ease-out",
-  }}
-  className="relative text-warning bg-warning/10 p-4 sm:p-5 border border-warning/30 rounded-3xl overflow-hidden"
->
-  <div className="flex items-center gap-3">
-    <div
-      className="shrink-0 bg-warning/20 p-2.5 rounded-2xl"
-      style={{ animation: "floatIcon 3s ease-in-out infinite" }}
-    >
-      <Sparkles size={20} />
-    </div>
-    <h2 className="font-bold text-base sm:text-lg">Product Tips</h2>
-  </div>
+          {/* Product Tips */}
+          <div
+            ref={tipCardRef}
+            onMouseMove={handleTiltMove}
+            onMouseLeave={resetTilt}
+            style={{
+              transform: `perspective(600px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+              transition: "transform 0.15s ease-out",
+            }}
+            className="relative text-warning bg-warning/10 p-4 sm:p-5 border border-warning/30 rounded-3xl overflow-hidden"
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="shrink-0 bg-warning/20 p-2.5 rounded-2xl"
+                style={{ animation: "floatIcon 3s ease-in-out infinite" }}
+              >
+                <Sparkles size={20} />
+              </div>
+              <h2 className="font-bold text-base sm:text-lg">Product Tips</h2>
+            </div>
 
-  <div className="relative h-12 mt-3 overflow-hidden">
-    {productTips.map((tip, idx) => (
-      <p
-        key={idx}
-        className="absolute inset-0 text-xs sm:text-sm leading-relaxed text-secondary"
-        style={{
-          opacity: idx === tipIndex ? 1 : 0,
-          transform: idx === tipIndex ? "translateY(0)" : "translateY(8px)",
-          transition: "opacity 0.5s ease, transform 0.5s ease",
-        }}
-      >
-        {tip}
-      </p>
-    ))}
-  </div>
+            <div className="relative h-12 mt-3 overflow-hidden">
+              {productTips.map((tip, idx) => (
+                <p
+                  key={idx}
+                  className="absolute inset-0 text-xs sm:text-sm leading-relaxed text-secondary"
+                  style={{
+                    opacity: idx === tipIndex ? 1 : 0,
+                    transform: idx === tipIndex ? "translateY(0)" : "translateY(8px)",
+                    transition: "opacity 0.5s ease, transform 0.5s ease",
+                  }}
+                >
+                  {tip}
+                </p>
+              ))}
+            </div>
 
-  <div className="flex gap-1.5 mt-3">
-    {productTips.map((_, idx) => (
-      <div
-        key={idx}
-        className="h-1 rounded-full transition-all duration-300"
-        style={{
-          width: idx === tipIndex ? "16px" : "6px",
-          backgroundColor: idx === tipIndex ? "currentColor" : "currentColor",
-          opacity: idx === tipIndex ? 1 : 0.3,
-        }}
-      />
-    ))}
-  </div>
+            <div className="flex gap-1.5 mt-3">
+              {productTips.map((_, idx) => (
+                <div
+                  key={idx}
+                  className="h-1 rounded-full transition-all duration-300"
+                  style={{
+                    width: idx === tipIndex ? "16px" : "6px",
+                    backgroundColor: "currentColor",
+                    opacity: idx === tipIndex ? 1 : 0.3,
+                  }}
+                />
+              ))}
+            </div>
 
-  <style>{`
-    @keyframes floatIcon {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
-    }
-  `}</style>
-</div>
+            <style>{`
+              @keyframes floatIcon {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-4px); }
+              }
+            `}</style>
+          </div>
         </section>
 
         {/* Right Column: Form */}

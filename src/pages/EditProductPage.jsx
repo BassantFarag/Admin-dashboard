@@ -158,7 +158,11 @@ export default function EditProductPage() {
           </div>
         </div>
 
-        <ProductHeader isActive={apiData.isActive} />
+        <ProductHeader
+          isActive={apiData.isActive}
+          handleBack={() => window.history.back()}
+          isDark={isDark}
+        />
 
         {/* Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
