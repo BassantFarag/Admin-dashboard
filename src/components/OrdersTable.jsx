@@ -1,37 +1,36 @@
-import StatusBadge from "./StatusBadge"; // إعادة تفعيل الـ import
+import StatusBadge from "./StatusBadge"; 
 import { PackageX, User } from "lucide-react";
 
-// مكون Skeleton مميز بنفس شكل الخطوط الأفقية المدورة
 const SkeletonRow = () => (
   <tr className="animate-pulse border-b border-border-custom/30">
     {/* Order ID Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-24 bg-border-custom/40 rounded-full"></div>
+      <div className="h-3.5 w-24 bg-[#2a2f3d] rounded-full"></div>
     </td>
 
     {/* Customer Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-32 bg-border-custom/40 rounded-full"></div>
+      <div className="h-3.5 w-32 bg-[#2a2f3d] rounded-full"></div>
     </td>
 
     {/* Date Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-20 bg-border-custom/40 rounded-full"></div>
+      <div className="h-3.5 w-20 bg-[#2a2f3d] rounded-full"></div>
     </td>
 
     {/* Status Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-28 bg-border-custom/40 rounded-full"></div>
+      <div className="h-3.5 w-28 bg-[#2a2f3d] rounded-full"></div>
     </td>
 
     {/* Payment Skeleton */}
     <td className="py-5 px-6">
-      <div className="h-3.5 w-24 bg-border-custom/40 rounded-full"></div>
+      <div className="h-3.5 w-24 bg-[#2a2f3d] rounded-full"></div>
     </td>
 
     {/* Total Price Skeleton */}
     <td className="py-5 px-6 flex justify-end">
-      <div className="h-3.5 w-20 bg-border-custom/40 rounded-full"></div>
+      <div className="h-3.5 w-20 bg-[#2a2f3d] rounded-full"></div>
     </td>
   </tr>
 );
@@ -55,12 +54,10 @@ function OrdersTable({ orders = [], isLoading = false , onOrderClick  }) {
 
           <tbody className="divide-y divide-border-custom/50 text-sm">
             {isLoading ? (
-              // 1. حالة التحميل: عرض الـ Skeleton Rows
               Array.from({ length: 5 }).map((_, index) => (
                 <SkeletonRow key={index} />
               ))
             ) : orders.length > 0 ? (
-              // 2. حالة وجود طلبات: عرض البيانات
               orders.map((order) => {
                 const customerName =
                   order.user?.name ||
@@ -137,7 +134,6 @@ function OrdersTable({ orders = [], isLoading = false , onOrderClick  }) {
                 );
               })
             ) : (
-              // 3. حالة عدم وجود داتا (No Orders)
               <tr>
                 <td colSpan="6" className="py-16 text-center">
                   <div className="flex flex-col items-center justify-center gap-2">

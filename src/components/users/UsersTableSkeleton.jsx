@@ -1,22 +1,3 @@
-/*
- * Users Table Skeleton
- *
- * File Purpose:
- * Renders an animated placeholder skeleton loader for the Users Table using `react-loading-skeleton`.
- *
- * Responsibilities:
- * - Responsible for the Loading UI of the Users Table while user data is being fetched or mutated.
- * - Uses `react-loading-skeleton` library to produce animated shimmer placeholders instead of manual CSS animations.
- * - Replicates the exact visual layout, columns, dimensions, and rows of the actual UsersTable.
- *
- * Data & Logic:
- * - Contains NO users data or business logic.
- * - Purely a presentational loading placeholder component.
- *
- * Rendering Control:
- * - Its visibility is controlled exclusively by `UsersTable` (and parent `Users.jsx`) via the `isLoading` prop.
- */
-
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 

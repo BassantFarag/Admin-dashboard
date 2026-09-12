@@ -15,6 +15,7 @@ import EditProductPage from "../pages/EditProductPage";
 import AdminProfile from "../pages/AdminProfile";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
+import Wishlist from "../pages/Wishlist";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
               {
                 path: "AdminProfile",
                 element: <AdminProfile />,
+              },
+              {
+                path: "Wishlist",
+                element: <Wishlist />,
               },
             ],
           },

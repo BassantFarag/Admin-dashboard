@@ -1,17 +1,11 @@
-// Search bar + collapsible "Add User" form for the Users page.
-// Owns its own form state; delegates the actual API call to Users.jsx.
-
 import { useState } from 'react'
-import { ChevronDown, Search, UserPlus, Users2, X } from 'lucide-react'
+import { ChevronDown, Search, UserPlus, X } from 'lucide-react'
 import Button from '../ui/button'
 import Input from '../ui/input'
-import PageHeroHeader from '../ui/PageHeroHeader'
 
 const UserHeader = ({ onAddUser, onSearchChange }) => {
-  // Local state to toggle the visibility of the Add User form panel.
   const [isOpen, setIsOpen] = useState(false)
 
-  // Local state to manage the new user form input values.
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -19,20 +13,16 @@ const UserHeader = ({ onAddUser, onSearchChange }) => {
     phone: '',
   })
   
-  // Forward search input text changes to the parent component for filtering.
   const onSearchInputChange = (e) => {
     const value = e.target.value
     onSearchChange(value) 
   }
 
-  // Handle new user form submission, delegate API execution to parent, and reset form on success.
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Invoke the parent callback to perform the user creation API request.
     const success = await onAddUser(formData)
 
-    // On successful creation, reset the local form inputs and collapse the panel.
     if (success) {
       setFormData({
         username: '',
@@ -47,23 +37,22 @@ const UserHeader = ({ onAddUser, onSearchChange }) => {
     
   return (
     <div className="flex flex-col gap-3">
-      <PageHeroHeader
-        icon={<Users2 className="h-5 w-5" />}
-        eyebrow="User Management"
-        title="Manage Users"
-        subtitle="Search your customers and admins, or add a new account."
-        rightSlot={
-          <div className="flex w-full flex-col gap-3 sm:flex-row">
-            <div className="grow">
-              <Input placeholder="Search users..." leftIcon={<Search className="h-5 w-5" />} onChange={onSearchInputChange} />
-            </div>
+      <div className="relative flex flex-col gap-5 rounded-xl bg-card p-4 shadow-sm lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-medium text-active">User Management</p>
+          <h2 className="text-2xl font-semibold text-primary">Manage Users</h2>
+        </div>
 
-            <Button className='header-btn-primary' onClick={() => setIsOpen(!isOpen)} leftIcon={<UserPlus className="h-5 w-5 header-btn-icon" />} rightIcon={<ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} header-btn-icon`} />}>
-              <span className="header-btn-text">Add User</span>
-            </Button>
+        <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+          <div className="grow">
+            <Input placeholder="Search users..." leftIcon={<Search className="h-5 w-5" />} onChange={onSearchInputChange} />
           </div>
-        }
-      />
+
+          <Button className='header-btn-primary' onClick={() => setIsOpen(!isOpen)} leftIcon={<UserPlus className="h-5 w-5 header-btn-icon" />} rightIcon={<ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} header-btn-icon`} />}>
+            <span className="header-btn-text">Add User</span>
+          </Button>
+        </div>
+      </div>
 
       <div className={`grid transition-all duration-300 ease-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
         <div className="min-h-0 overflow-hidden">
