@@ -110,7 +110,15 @@ const UserHeader = ({ onAddUser, onSearchChange }) => {
               </div>
 
               <div className="flex flex-col gap-4 border-t border-border-custom pt-5 sm:flex-row sm:items-center sm:justify-end">
-                <Button type="reset" className="header-btn-clear w-full border border-border-custom shadow-none sm:w-auto">
+                <Button type="reset" className="header-btn-clear w-full border border-border-custom shadow-none sm:w-auto"
+                  onClick={() => 
+                    setFormData(
+                      { username: '', 
+                        email: '',
+                        password: '',
+                        phone: '' 
+                      })
+                    }>
                   <span className="header-btn-text">Clear</span>
                 </Button>
 

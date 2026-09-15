@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { createProduct } from "../api/productApi";
 import AddProductForm from "../components/addProductForm";
 import AddProductHeader from "../components/AddProductHeader";
+import iphoneImage from "../assets/Images/iphone_air__b5qmgl05ojyq_large.jpg";
+
 
 const AddProduct = () => {
   const [images, setImages] = useState([]);
@@ -105,7 +107,11 @@ const AddProduct = () => {
       }
 
     } catch (error) {
-      const message = error.response?.data?.message || "Failed to create product.";
+     console.error("Error creating product:", error.response?.data || error.message);
+      const message = 
+        error.response?.data?.message === "Validation Error" 
+        ? "Please check the product details and try again"
+        : "Failed to create product.";
       toast.error(message);
     }
   };

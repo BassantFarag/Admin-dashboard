@@ -82,25 +82,36 @@ const Users = () => {
   }, [])
 
   const handleAddUser = async (formData) => {
-    dispatch({ type: 'SET_LOADING', payload: true })
 
     try {
       const response = await addAllUser(formData)
       toast.success(response.data.message)
 
+      // Start full-page loading before fetching the updated users list.
+      dispatch({
+        type: 'SET_LOADING',
+        payload: true,
+      })
+
+      // Fetch the updated users list from the API to update the shared state.
       const usersResponse = await getAllUsers()
       dispatch({ type: 'SET_USERS', payload: usersResponse.data.users })
 
+      // Stop full-page loading after both creation and list synchronization finish.
+      dispatch({
+        type: 'SET_LOADING',
+        payload: false,
+      })
       return true
     } catch (error) {
+
+      // Display error notification if user creation fails.
       const message =
         error.response?.data?.message || 'Failed to create user'
       toast.error(message)
 
       return false
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false })
-    }
+    } 
   }
 
   const handleSaveChanges = async (
