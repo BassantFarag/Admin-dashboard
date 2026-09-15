@@ -136,11 +136,6 @@ const Users = () => {
 
   // Create a new user via API and refresh the users list, maintaining page loading throughout.
   const handleAddUser = async (formData) => {
-    // Start continuous full-page loading covering both user creation and list re-fetching.
-    dispatch({
-      type: 'SET_LOADING',
-      payload: true,
-    })
 
     try {
       // Send POST request with new user payload to the creation API.
@@ -149,6 +144,12 @@ const Users = () => {
       // Display server success notification to the user.
       toast.success(response.data.message)
 
+      // Start full-page loading before fetching the updated users list.
+      dispatch({
+        type: 'SET_LOADING',
+        payload: true,
+      })
+
       // Fetch the updated users list from the API to update the shared state.
       const usersResponse = await getAllUsers()
       dispatch({
@@ -156,21 +157,21 @@ const Users = () => {
         payload: usersResponse.data.users,
       })
 
+      // Stop full-page loading after both creation and list synchronization finish.
+      dispatch({
+        type: 'SET_LOADING',
+        payload: false,
+      })
       return true
     } catch (error) {
+
       // Display error notification if user creation fails.
       const message =
         error.response?.data?.message || 'Failed to create user'
       toast.error(message)
 
       return false
-    } finally {
-      // Stop full-page loading only after both creation and list synchronization finish.
-      dispatch({
-        type: 'SET_LOADING',
-        payload: false,
-      })
-    }
+    } 
   }
 
   // Update existing user profile information via API and synchronize the shared state.
