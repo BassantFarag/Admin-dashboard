@@ -1,38 +1,11 @@
-/*
- * User Header
- *
- * File Purpose:
- * Renders the top header of the Users management section including the search bar and the collapsible Add User form.
- *
- * Responsibilities:
- * - Controls the local search input UI and passes value updates to the parent via `onSearchChange`.
- * - Manages local collapsible state (`isOpen`) for the Add User form panel.
- * - Manages local form state (`formData`) for creating a new user.
- * - Forwards form data to the parent via `onAddUser` and resets the form upon successful creation.
- *
- * Data Source:
- * - Controlled local state for search input and user creation form fields.
- *
- * Relationship to Other Components:
- * - Child component of `Users.jsx`.
- * - Calls parent callbacks `onAddUser` and `onSearchChange`.
- * - Uses shared UI components `Input` and `Button`.
- *
- * What It Must NOT Manage:
- * - Does not hold or modify the shared users list or reducer.
- * - Does not make direct API calls (delegates to parent callback `onAddUser`).
- */
-
 import { useState } from 'react'
 import { ChevronDown, Search, UserPlus, X } from 'lucide-react'
 import Button from '../ui/button'
 import Input from '../ui/input'
 
 const UserHeader = ({ onAddUser, onSearchChange }) => {
-  // Local state to toggle the visibility of the Add User form panel.
   const [isOpen, setIsOpen] = useState(false)
 
-  // Local state to manage the new user form input values.
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -40,20 +13,16 @@ const UserHeader = ({ onAddUser, onSearchChange }) => {
     phone: '',
   })
   
-  // Forward search input text changes to the parent component for filtering.
   const onSearchInputChange = (e) => {
     const value = e.target.value
     onSearchChange(value) 
   }
 
-  // Handle new user form submission, delegate API execution to parent, and reset form on success.
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Invoke the parent callback to perform the user creation API request.
     const success = await onAddUser(formData)
 
-    // On successful creation, reset the local form inputs and collapse the panel.
     if (success) {
       setFormData({
         username: '',

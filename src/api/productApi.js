@@ -13,9 +13,6 @@ export const createProduct = (payload) =>
     },
   });
 
-// search Products
-// ملحوظة: الـ backend بياخد اسم الـ query param 'search' فقط،
-// وبيدور على تطابق تام للاسم (exact match)، مش جزء من الاسم.
 export const searchProducts = (searchTerm) =>
   api.get('/products/search', { params: { search: searchTerm } });
 

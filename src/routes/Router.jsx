@@ -11,9 +11,11 @@ import Orders from "../pages/Orders";
 import Carts from "../pages/Carts";
 import Settings from "../pages/Settings";
 import ProductView from "../pages/ProductView";
-import EditProduct from "../components/EditProduct";
+import EditProductPage from "../pages/EditProductPage";
+import AdminProfile from "../pages/AdminProfile";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
+import Wishlist from "../pages/Wishlist";
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +35,6 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                
                 element: <Dashboard />,
               },
               {
@@ -54,7 +55,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: "products/edit/:id",
-                element: <EditProduct />,
+                element: <EditProductPage />,
               },
               {
                 path: "orders",
@@ -68,6 +69,14 @@ export const router = createBrowserRouter([
                 path: "settings",
                 element: <Settings />,
               },
+              {
+                path: "AdminProfile",
+                element: <AdminProfile />,
+              },
+              {
+                path: "Wishlist",
+                element: <Wishlist />,
+              },
             ],
           },
         ],
@@ -80,10 +89,7 @@ export const router = createBrowserRouter([
     element: (
       <div className="flex min-h-screen items-center justify-center bg-bg-main px-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary">
-            Access Denied
-          </h1>
-
+          <h1 className="text-3xl font-bold text-primary">Access Denied</h1>
           <p className="mt-2 text-sm text-secondary">
             You do not have permission to access this page.
           </p>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Plus, X , ArrowBigDown} from 'lucide-react';
+import { Plus, X, ArrowBigDown } from 'lucide-react';
 
-const AddProductForm = ({ onSubmitProduct , onCancel }) => {
+const AddProductForm = ({ onSubmitProduct, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
@@ -13,15 +13,13 @@ const AddProductForm = ({ onSubmitProduct , onCancel }) => {
     category: 'electronics',
     subcategory: '',
     brand: '',
-     featured: false,
+    featured: false,
     isActive: true,
   });
 
   // state for tags
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
-
-
 
   // handle input changes for form fields
   const handleChange = (e) => {
@@ -84,7 +82,7 @@ const AddProductForm = ({ onSubmitProduct , onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full bg-card border border-border-custom p-5 sm:p-6 rounded-3xl space-y-5 shadow-xl">
+    <form onSubmit={handleSubmit} className="w-full bg-card border border-border-custom p-4 sm:p-6 rounded-3xl space-y-4 sm:space-y-5 shadow-xl">
       {/* Product Name */}
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium text-primary">Product Name</label>
@@ -176,7 +174,7 @@ const AddProductForm = ({ onSubmitProduct , onCancel }) => {
 
       {/* Category & Subcategory */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/*Category  */}
+        {/* Category */}
         <div className="flex flex-col gap-2 relative">
           <label className="text-sm font-medium text-primary">Category</label>
           <select
@@ -218,21 +216,21 @@ const AddProductForm = ({ onSubmitProduct , onCancel }) => {
       </div>
 
       {/* Tags */}
-      <div className="bg-input/50 border border-border-custom rounded-2xl p-4 space-y-3">
+      <div className="bg-input/50 border border-border-custom rounded-2xl p-3 sm:p-4 space-y-3">
         <label className="text-sm font-medium text-primary block">Tags</label>
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <input
             type="text"
             placeholder="Type a tag and press +"
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleAddTag(e)}
-            className="flex-1 bg-input border border-border-custom text-primary rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-active transition-colors placeholder:text-secondary/50"
+            className="flex-1 min-w-0 bg-input border border-border-custom text-primary rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:border-active transition-colors placeholder:text-secondary/50"
           />
           <button
             type="button"
             onClick={handleAddTag}
-            className="w-12 h-12 bg-disabled/40 hover:bg-disabled text-primary rounded-2xl text-xl font-bold flex items-center justify-center transition-colors shrink-0 cursor-pointer"
+            className="w-11 h-11 sm:w-12 sm:h-12 bg-disabled/40 hover:bg-disabled text-primary rounded-2xl text-xl font-bold flex items-center justify-center transition-colors shrink-0 cursor-pointer"
           >
             <Plus size={20} />
           </button>
@@ -254,19 +252,19 @@ const AddProductForm = ({ onSubmitProduct , onCancel }) => {
       </div>
 
       {/* Checkboxes */}
-      <div className="flex items-center gap-4 pt-2">
-        <label className="flex items-center gap-2 bg-input border border-border-custom px-5 py-3 rounded-2xl cursor-pointer hover:border-active transition-colors">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
+        <label className="flex items-center gap-2 bg-input border border-border-custom px-4 sm:px-5 py-3 rounded-2xl cursor-pointer hover:border-active transition-colors">
           <input
             type="checkbox"
-             name="featured" 
-             checked={formData.featured}
+            name="featured" 
+            checked={formData.featured}
             onChange={handleChange}
             className="w-4 h-4 rounded accent-active cursor-pointer"
           />
           <span className="text-sm font-medium text-primary">Featured</span>
         </label>
 
-        <label className="flex items-center gap-2 bg-input border border-border-custom px-5 py-3 rounded-2xl cursor-pointer hover:border-active transition-colors">
+        <label className="flex items-center gap-2 bg-input border border-border-custom px-4 sm:px-5 py-3 rounded-2xl cursor-pointer hover:border-active transition-colors">
           <input
             type="checkbox"
             name="isActive"
@@ -279,16 +277,17 @@ const AddProductForm = ({ onSubmitProduct , onCancel }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center gap-3 pt-4 border-t border-border-custom">
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-3 pt-4 border-t border-border-custom">
         <button
           type="button"
-          className="bg-input hover:bg-disabled/50 text-secondary font-medium px-6 py-3 rounded-2xl text-sm transition-colors cursor-pointer"
+          onClick={onCancel}
+          className="w-full sm:w-auto text-center bg-input hover:bg-disabled/50 text-secondary font-medium px-6 py-3 rounded-2xl text-sm transition-colors cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="bg-active hover:bg-active-hover text-primary font-semibold px-6 py-3 rounded-2xl text-sm transition-colors cursor-pointer"
+          className="w-full sm:w-auto text-center bg-active hover:bg-active-hover text-primary font-semibold px-6 py-3 rounded-2xl text-sm transition-colors cursor-pointer"
         >
           Create Product
         </button>
