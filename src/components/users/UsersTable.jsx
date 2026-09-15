@@ -127,31 +127,34 @@ const UsersTable = ({
                             {/* User Actions */}
                             <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
+                                {/* Edit Button */}
                                 <button
                                     type="button"
                                     onClick={() => handleEditUser(user)}
                                     aria-label={`Edit ${user.username}`}
                                     command="show-modal"
                                     commandfor="edit-user-dialog"
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-info text-bg-main transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/5 text-gray-300 transition hover:bg-white/10"
                                 >
                                 <Pencil className="h-4 w-4" />
                                 </button>
 
+                                {/* Verify / Role Button */}
                                 <button
                                     type="button"
                                     aria-label={`Verify ${user.username}`}
                                     onClick={() => handleChangeRole(user)}
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-success text-bg-main transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/15 text-amber-500 transition hover:bg-amber-500/25"
                                 >
                                 <ShieldCheck className="h-4 w-4" />
                                 </button>
 
+                                {/* Delete Button */}
                                 <button
                                     type="button"
                                     aria-label={`Delete ${user.username}`}
                                     onClick={() => handleDeleteUser(user)}
-                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-danger text-bg-main transition hover:opacity-90"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-500/15 text-red-400 transition hover:bg-red-500/25"
                                 >
                                 <Trash2 className="h-4 w-4" />
                                 </button>
