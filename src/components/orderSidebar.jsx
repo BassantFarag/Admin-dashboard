@@ -131,7 +131,7 @@ const OrderSidebar = ({ order, onClose, onOrderUpdated }) => {
       {/* side bar*/}
 
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-[460px] flex-col bg-white text-gray-900 shadow-2xl transition-transform duration-300 ease-out dark:bg-gray-950 dark:text-white ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-[460px] flex-col bg-white text-gray-900 shadow-2xl transition-transform duration-300 ease-out dark:bg-card dark:text-white ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* header side bar*/}
         <div className="flex shrink-0 items-center justify-between border-b border-amber-300/70 px-6 py-4 dark:border-white/10">
@@ -164,7 +164,7 @@ const OrderSidebar = ({ order, onClose, onOrderUpdated }) => {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full rounded-xl border border-amber-300/70 bg-amber-50/30 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-amber-500 focus:ring-1 focus:ring-amber-500 dark:border-white/10 dark:bg-gray-900 dark:text-white"
+              className="w-full rounded-xl border border-amber-300/70 bg-card px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-amber-500 focus:ring-1 focus:ring-amber-500 dark:border-white/10 dark:bg-card dark:text-white"
             >
               <option value="pending">Pending</option>
               <option value="confirmed">Confirmed</option>
