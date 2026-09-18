@@ -13,67 +13,62 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 10;
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Client-side filters
+  // Filters
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [cardFilter, setCardFilter] = useState("all");
 
+  // timer for search 
   useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearch, statusFilter, paymentFilter, cardFilter]);
+
+  useEffect(() => {
+    let isMounted = true;
     setLoading(true);
-    getAllOrders()
+
+    getAllOrders({
+      page: currentPage,
+      limit: 10,
+      search: debouncedSearch || undefined,
+      status: statusFilter !== "all" ? statusFilter : undefined,
+      paymentStatus: paymentFilter !== "all" ? paymentFilter : undefined,
+      paymentMethod: cardFilter !== "all" ? cardFilter : undefined,
+    })
       .then((res) => {
-        setOrders(res.data.orders || res.data || []);
+        if (!isMounted) return;
+        const data = res.data;
+        const ordersArray = data.orders || (Array.isArray(data) ? data : []);
+        setOrders(ordersArray);
+
+        
+        const total =
+          data.totalPages ||
+          (data.total ? Math.ceil(data.total / 10) : 1);
+        setTotalPages(total);
         setLoading(false);
       })
       .catch((err) => {
-        const message = err.response?.data?.message || "Failed to fetch orders from server";
+        if (!isMounted) return;
+        const message =
+          err.response?.data?.message || "Failed to fetch orders from server";
         toast.error(message);
         setLoading(false);
       });
-  }, []);
 
-  const filteredOrders = orders.filter((order) => {
-    const searchValue = search.toLowerCase();
-
-    const matchesSearch =
-      (order.shippingAddress?.fullName || "")
-        .toLowerCase()
-        .includes(searchValue) ||
-      (order._id || "").toLowerCase().includes(searchValue) ||
-      (order.createdAt || "").toLowerCase().includes(searchValue);
-
-    const matchesStatus =
-      statusFilter === "all" ||
-      (order.status || "").toLowerCase() === statusFilter.toLowerCase();
-
-    const matchesPayment =
-      paymentFilter === "all" ||
-      (order.paymentStatus || "").toLowerCase() ===
-        paymentFilter.toLowerCase();
-
-    const matchesMethod =
-      cardFilter === "all" ||
-      (order.paymentMethod || "").toLowerCase() ===
-        cardFilter.toLowerCase();
-
-    return matchesSearch && matchesStatus && matchesPayment && matchesMethod;
-  });
-
-  // Reset to page 1 whenever a filter changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, statusFilter, paymentFilter, cardFilter]);
-
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage) || 1;
-  const startIndex = (currentPage - 1) * ordersPerPage;
-
-  const currentOrders = filteredOrders.slice(
-    startIndex,
-    startIndex + ordersPerPage
-  );
+    return () => {
+      isMounted = false;
+    };
+  }, [currentPage, debouncedSearch, statusFilter, paymentFilter, cardFilter]);
 
   return (
     <div className="min-h-screen bg-[--color-bg-main] space-y-6 p-4 lg:p-6">
@@ -90,9 +85,13 @@ const Orders = () => {
         setCardFilter={setCardFilter}
       />
 
-      <OrdersTable orders={currentOrders} isLoading={loading} onOrderClick={setSelectedOrder} />
+      <OrdersTable
+        orders={orders}
+        isLoading={loading}
+        onOrderClick={setSelectedOrder}
+      />
 
-      {filteredOrders.length > 0 && (
+      {orders.length > 0 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
