@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 import { login as loginApi, logout as logoutApi, authMe } from "../api/authApi";
 import AuthContext from "./AuthContext";
-
-
 const AuthProvider = ({ children }) => {
   const tokenStorage = localStorage.getItem("token");
-
   const [token, setToken] = useState(tokenStorage);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Verify the stored token and restore the authenticated user on initial load.
   useEffect(() => {
     const fetchUser = async () => {
       if (token) {
@@ -32,9 +27,16 @@ const AuthProvider = ({ children }) => {
     fetchUser();
   }, []); 
 
-  // Authenticate the user and store the token and user data.
   const login = async (email, password) => {
     const response = await loginApi({ email, password });
+
+    if (response.data.user?.role !== "admin") {
+      const err = new Error(
+        "This account doesn't have admin access. Only administrators can sign in here."
+      );
+      err.code = "NOT_ADMIN";
+      throw err;
+    }
 
     localStorage.setItem("token", response.data.token);
     setToken(response.data.token);
@@ -43,7 +45,6 @@ const AuthProvider = ({ children }) => {
     return response.data;
   };
 
-  // Log out the user and clear the authentication state.
   const logout = async () => {
     try {
       await logoutApi();
@@ -57,8 +58,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    // Expose authentication state and actions to the application.
-    <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, setUser, token, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
