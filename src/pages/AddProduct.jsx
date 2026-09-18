@@ -4,8 +4,6 @@ import { toast } from "react-toastify";
 import { createProduct } from "../api/productApi";
 import AddProductForm from "../components/addProductForm";
 import AddProductHeader from "../components/AddProductHeader";
-import iphoneImage from "../assets/Images/iphone_air__b5qmgl05ojyq_large.jpg";
-
 
 const AddProduct = () => {
   const [images, setImages] = useState([]);
@@ -107,11 +105,7 @@ const AddProduct = () => {
       }
 
     } catch (error) {
-     console.error("Error creating product:", error.response?.data || error.message);
-      const message = 
-        error.response?.data?.message === "Validation Error" 
-        ? "Please check the product details and try again"
-        : "Failed to create product.";
+      const message = error.response?.data?.message || "Failed to create product.";
       toast.error(message);
     }
   };
@@ -119,7 +113,7 @@ const AddProduct = () => {
   return (
     <div className="w-full min-h-screen bg-bg-main p-4 sm:p-6 text-primary">
       <AddProductHeader />
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mt-6">
         
         {/* Left Column: Gallery */}
         <section className="lg:col-span-5 bg-card border border-border-custom p-4 sm:p-6 rounded-3xl shadow-xl space-y-6">

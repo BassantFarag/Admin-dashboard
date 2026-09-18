@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getAllWishlists } from '../api/wishlistApi';
 import Loading from '../components/Loading';
+import PageHeroHeader from '../components/ui/PageHeroHeader';
 
 const Wishlist = () => {
   const navigate = useNavigate();
@@ -47,26 +48,20 @@ const Wishlist = () => {
 
   return (
     <div className="p-3 sm:p-6 min-h-screen bg-bg-main text-primary">
-      {/* Header Bar - Responsive Flex Layout */}
-      <div className="bg-card border border-border-custom rounded-2xl p-4 sm:p-5 px-4 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 shadow-sm">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 border border-border-custom rounded-xl flex items-center justify-center bg-bg-main text-rose-500 shrink-0">
-            <Heart className="w-5 h-5 sm:w-6 sm:h-6 fill-rose-500/10" />
-          </div>
-          <div>
-            <span className="text-[10px] sm:text-[11px] font-bold text-secondary tracking-[1.5px] uppercase block">
-              Customer Insights
-            </span>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-primary mt-0.5">
-              Customer Wishlists
-            </h1>
-          </div>
-        </div>
-
-        <div className="w-full sm:w-auto bg-bg-main border border-border-custom px-4 py-2 rounded-xl text-center sm:text-right flex sm:block items-center justify-between">
-          <span className="text-xs text-secondary block font-medium">Active Lists</span>
-          <span className="text-base sm:text-lg font-bold text-active">{activeWishlists.length}</span>
-        </div>
+      {/* Header Bar */}
+      <div className="mb-6">
+        <PageHeroHeader
+          icon={<Heart className="h-5 w-5" />}
+          eyebrow="Customer insights"
+          title="Customer Wishlists"
+          subtitle="See which products your customers are saving for later."
+          rightSlot={
+            <div className="w-full sm:w-auto bg-input border border-border-custom px-4 py-2 rounded-xl text-center sm:text-right flex sm:block items-center justify-between">
+              <span className="text-xs text-secondary block font-medium">Active Lists</span>
+              <span className="text-base sm:text-lg font-bold text-active">{activeWishlists.length}</span>
+            </div>
+          }
+        />
       </div>
 
       {/* Wishlists Container */}

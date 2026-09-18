@@ -1,7 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from '../contexts/AuthContext';
-import { toast } from 'react-toastify';
 
 import {
   LayoutDashboard,
@@ -30,25 +29,12 @@ const Sidebar = () => {
     { name: 'Cart', path: '/carts', icon: ShoppingCart },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
- 
+
   const handleLogout = async () => {
-
-    try {
-      await logout();
-
-      toast.success('Logged out successfully.');
-      
-      navigate('/login', { replace: true });
-    
-    } catch (error) {
-
-      const message = error.response?.data?.message || 'Failed to log out.';
-
-      toast.error(message);
-      
-    }
-
+    await logout();
+    navigate('/login', { replace: true });
   };
+
   return (
     <aside className="hidden w-64 min-h-screen bg-card border-r border-border-custom flex-col p-6 transition-colors duration-200 md:flex ">
       

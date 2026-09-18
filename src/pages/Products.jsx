@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Package, Plus } from 'lucide-react';
 import { getProducts, searchProducts, updateProduct, deleteProduct } from '../api/productApi';
 import StatsCards from '../components/StatsCards';
 import ProductCard from '../components/ProductCard';
 import EditPopup from '../components/EditPopup';
 import Loading from '../components/Loading';
+import PageHeroHeader from '../components/ui/PageHeroHeader';
 
 const Products = () => {
   const navigate = useNavigate();
@@ -174,26 +176,22 @@ const Products = () => {
   return (
     <div className="p-4 sm:p-6 min-h-screen bg-bg-main text-primary">
       {/* Header Bar */}
-      <div className="bg-card border border-border-custom rounded-2xl p-4 sm:p-5 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
-        <div className="flex items-center gap-4">
-          <div className="w-11 h-11 border border-border-custom rounded-xl flex items-center justify-center bg-bg-main text-active shrink-0">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-          </div>
-          <div>
-            <span className="text-[11px] font-bold text-secondary tracking-[1.5px] block">
-              PRODUCT DASHBOARD
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-primary mt-0.5">Products</h1>
-          </div>
-        </div>
-        <button
-          onClick={() => navigate('/add-product')}
-          className="w-full sm:w-auto justify-center bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
-        >
-          + Add Product
-        </button>
+      <div className="mb-5">
+        <PageHeroHeader
+          icon={<Package className="h-5 w-5" />}
+          eyebrow="Product dashboard"
+          title="Products"
+          subtitle="Browse, filter, and manage every product in your catalog."
+          rightSlot={
+            <button
+              onClick={() => navigate('/add-product')}
+              className="w-full sm:w-auto justify-center bg-active hover:opacity-90 text-bg-main px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-lg cursor-pointer"
+            >
+              <Plus className="h-4 w-4" />
+              Add Product
+            </button>
+          }
+        />
       </div>
 
       {/* Stats Cards */}
