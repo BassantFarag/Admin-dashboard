@@ -19,6 +19,10 @@ const AdminProfile = () => {
     avatar: "",
   });
 
+  // The backend may store the display name as `username` or `name`.
+  // We detect which one it uses when loading, and send the update under that key.
+  const [nameField, setNameField] = useState("name");
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -30,8 +34,10 @@ const AdminProfile = () => {
       getUserById(currentUserId)
         .then((res) => {
           const userData = res.data?.user || res.data;
+          const field = "username" in userData ? "username" : "name";
+          setNameField(field);
           setFormData({
-            name: userData.name || "",
+            name: userData[field] || "",
             email: userData.email || "",
             phone: userData.phone || "",
             role: userData.role || "",
@@ -89,15 +95,17 @@ const AdminProfile = () => {
   setMessage({ type: "", text: "" });
 
   try {
-    let updatedUserData = { ...formData };
+    const { name, ...rest } = formData;
+    const payload = { ...rest, [nameField]: name };
+    let updatedUserData = payload;
 
     if (updateUser) {
-      const res = await updateUser(currentUserId, formData);
+      const res = await updateUser(currentUserId, payload);
       // إذا كان الـ API يرجع البيانات المحدثة مباشرة نأخذها منه
       if (res?.data?.user) {
         updatedUserData = res.data.user;
       } else if (res?.data) {
-        updatedUserData = { ...formData, ...res.data };
+        updatedUserData = { ...payload, ...res.data };
       }
     }
 
