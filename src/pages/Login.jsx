@@ -6,15 +6,10 @@ import AuthContext from "../contexts/AuthContext";
 const Login = () => {
   const navigate = useNavigate();
   const { login, user, isLoading } = useContext(AuthContext);
-
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  // Match the same theme source/persistence DashboardLayout uses, so the
-  // login screen respects the user's saved preference instead of always
-  // forcing dark mode, and any toggle here carries over after login.
   const [darkMode, setDarkMode] = useState(() => {
     return (
       localStorage.theme === "dark" ||
@@ -28,9 +23,8 @@ const Login = () => {
     localStorage.theme = darkMode ? "dark" : "light";
   }, [darkMode]);
 
-  // If the user is already authenticated, there's nothing to do on /login.
   useEffect(() => {
-    if (!isLoading && user) {
+    if (!isLoading && user?.role === "admin") {
       navigate("/", { replace: true });
     }
   }, [isLoading, user, navigate]);
@@ -40,7 +34,6 @@ const Login = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (error) setError("");
   };
-
   const validateForm = () => {
     const email = formData.email.trim();
     const password = formData.password;
@@ -49,18 +42,15 @@ const Login = () => {
       setError("Please enter your email and password.");
       return false;
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
       return false;
     }
-
     if (password.length < 6) {
       setError("Password must be at least 6 characters.");
       return false;
     }
-
     return true;
   };
 
@@ -79,6 +69,7 @@ const Login = () => {
       
     } catch (error) {
       const message =
+        (error?.code === "NOT_ADMIN" && error.message) ||
         error?.response?.data?.message ||
         error?.response?.data?.error ||
         "Invalid email or password.";
