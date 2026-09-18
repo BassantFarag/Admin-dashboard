@@ -1,7 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-
 import DashboardLayout from "../layouts/DashboardLayout";
-
 import Dashboard from "../pages/Dashboard";
 import Login from "../pages/Login";
 import Users from "../pages/Users";
@@ -16,6 +14,7 @@ import AdminProfile from "../pages/AdminProfile";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
 import Wishlist from "../pages/Wishlist";
+import Unauthorized from "../pages/Unauthorized";
 
 export const router = createBrowserRouter([
   {
@@ -86,15 +85,6 @@ export const router = createBrowserRouter([
 
   {
     path: "/unauthorized",
-    element: (
-      <div className="flex min-h-screen items-center justify-center bg-bg-main px-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary">Access Denied</h1>
-          <p className="mt-2 text-sm text-secondary">
-            You do not have permission to access this page.
-          </p>
-        </div>
-      </div>
-    ),
+    element: <Unauthorized />,
   },
 ]);
