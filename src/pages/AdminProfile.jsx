@@ -19,8 +19,6 @@ const AdminProfile = () => {
     avatar: "",
   });
 
-  // The backend may store the display name as `username` or `name`.
-  // We detect which one it uses when loading, and send the update under that key.
   const [nameField, setNameField] = useState("name");
 
   const [loading, setLoading] = useState(true);
@@ -101,7 +99,6 @@ const AdminProfile = () => {
 
     if (updateUser) {
       const res = await updateUser(currentUserId, payload);
-      // إذا كان الـ API يرجع البيانات المحدثة مباشرة نأخذها منه
       if (res?.data?.user) {
         updatedUserData = res.data.user;
       } else if (res?.data) {
@@ -109,7 +106,6 @@ const AdminProfile = () => {
       }
     }
 
-    // 1. تحديث الـ AuthContext مباشرة
     if (setUser) {
       setUser((prevUser) => ({
         ...prevUser,
@@ -117,7 +113,6 @@ const AdminProfile = () => {
       }));
     }
 
-    // 2. تحديث الـ LocalStorage بكافة المفاتيح المحتملة
     const existingUser = JSON.parse(localStorage.getItem("user") || "{}");
     const newUserData = { ...existingUser, ...updatedUserData };
     localStorage.setItem("user", JSON.stringify(newUserData));
