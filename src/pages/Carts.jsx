@@ -1,380 +1,436 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAllCarts } from '../api/cartsApi';
-import { 
-  ShoppingBag, 
-  ShoppingCart, 
-  Clock, 
-  DollarSign, 
-  Search, 
-  Eye, 
-  Mail, 
-  X 
+
+import {
+  ShoppingBag,
+  ShoppingCart,
+  DollarSign,
+  Eye,
+  X,
 } from 'lucide-react';
 
 const Carts = () => {
-  const [carts, setCarts] = useState([]);
+  const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
   const [selectedCart, setSelectedCart] = useState(null);
 
   useEffect(() => {
-    const fetchCarts = async () => {
+    const fetchCart = async () => {
       try {
         setLoading(true);
         setError(null);
+
         const res = await getAllCarts();
 
-        let rawData = res?.data?.carts || res?.data?.cart || res?.data || [];
-        if (rawData && typeof rawData === 'object' && !Array.isArray(rawData)) {
-          rawData = [rawData];
-        }
+        console.log('REAL CART DATA:', res.data);
 
-        setCarts(Array.isArray(rawData) ? rawData : []);
-      } catch (err) {
-        console.error("Error fetching carts:", err);
-        setError("Failed to fetch carts data from server.");
+        setCart(res.data);
+      } catch (error) {
+        console.error('Failed to fetch cart:', error);
+        setError('Failed to load cart data.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCarts();
+    fetchCart();
   }, []);
 
-  const totalCartsCount = carts.length;
-  const abandonedCartsCount = carts.filter(c => (c.status || '').toLowerCase() === 'abandoned').length;
 
-  const potentialRevenue = carts.reduce((acc, curr) => {
-    const price = Number(curr.total) || Number(curr.subtotal) || Number(curr.totalPrice) || 0;
-    return acc + price;
-  }, 0);
-
-  const recoveryRate = totalCartsCount > 0 
-    ? ((abandonedCartsCount / totalCartsCount) * 100).toFixed(1) 
-    : "0.0";
-
-  const filteredCarts = carts.filter(cart => {
-    const userName = cart.user?.name || cart.userName || 'Customer';
-    const cartId = cart._id || cart.id || '';
-
-    const matchesSearch = userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          cartId.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || 
-                          (cart.status || 'Active').toLowerCase() === statusFilter.toLowerCase();
-
-    return matchesSearch && matchesStatus;
-  });
+  const items = cart?.items || [];
+  const itemCount = cart?.itemCount || 0;
+  const subtotal = Number(cart?.subtotal) || 0;
+  const discountAmount = Number(cart?.discountAmount) || 0;
+  const total = Number(cart?.total) || 0;
+  const coupon = cart?.coupon || null;
 
   return (
-    <div className="w-full max-w-full flex-row overflow-x-hidden min-h-screen bg-[--color-bg-main] p-3 sm:p-6 text-primary space-y-4 sm:space-y-6 box-border">
+    <div className="w-full max-w-full min-h-screen bg-[--color-bg-main] p-3 sm:p-6 text-primary space-y-4 sm:space-y-6 box-border overflow-x-hidden">
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 w-full">
-        <div>
-          <span className="text-[10px] sm:text-xs uppercase tracking-wider text-secondary font-semibold">Admin · Management</span>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-primary">Carts</h1>
-        </div>
+  
+      <div>
+        <span className="text-[10px] sm:text-xs uppercase tracking-wider text-secondary font-semibold">
+          Admin · Management
+        </span>
+
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-primary">
+          Cart
+        </h1>
       </div>
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
-        <div className="bg-card border border-border-custom p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center gap-3 sm:gap-4 w-full box-border">
-          <div className="p-2.5 sm:p-3 bg-active/10 text-active rounded-xl sm:rounded-2xl shrink-0">
-            <ShoppingCart size={22} />
-          </div>
-          <div className="min-w-0">
-            <p className="text-[11px] sm:text-xs text-secondary font-medium truncate">Total Open Carts</p>
-            <h3 className="text-lg sm:text-xl font-bold mt-0.5 truncate">{totalCartsCount} Carts</h3>
-          </div>
+
+      {loading && (
+        <div className="bg-card border border-border-custom rounded-2xl sm:rounded-3xl p-6 text-center">
+          <p className="text-secondary">Loading cart...</p>
         </div>
+      )}
 
-        <div className="bg-card border border-border-custom p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center gap-3 sm:gap-4 w-full box-border">
-          <div className="p-2.5 sm:p-3 bg-warning/10 text-warning rounded-xl sm:rounded-2xl shrink-0">
-            <Clock size={22} />
-          </div>
-          <div className="min-w-0">
-            <p className="text-[11px] sm:text-xs text-secondary font-medium truncate">Abandoned Carts</p>
-            <h3 className="text-lg sm:text-xl font-bold mt-0.5 truncate">{abandonedCartsCount} Carts</h3>
-          </div>
+    
+      {!loading && error && (
+        <div className="bg-card border border-border-custom rounded-2xl sm:rounded-3xl p-6 text-center">
+          <p className="text-warning">{error}</p>
         </div>
+      )}
 
-        <div className="bg-card border border-border-custom p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center gap-3 sm:gap-4 w-full box-border">
-          <div className="p-2.5 sm:p-3 bg-emerald-500/10 text-emerald-400 rounded-xl sm:rounded-2xl shrink-0">
-            <DollarSign size={22} />
-          </div>
-          <div className="min-w-0">
-            <p className="text-[11px] sm:text-xs text-secondary font-medium truncate">Potential Revenue</p>
-            <h3 className="text-lg sm:text-xl font-bold mt-0.5 truncate">${potentialRevenue.toFixed(2)}</h3>
-          </div>
-        </div>
+    
+      {!loading && !error && cart && (
+        <>
+      
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
 
-        <div className="bg-card border border-border-custom p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center gap-3 sm:gap-4 w-full box-border">
-          <div className="p-2.5 sm:p-3 bg-purple-500/10 text-purple-400 rounded-xl sm:rounded-2xl shrink-0">
-            <ShoppingBag size={22} />
-          </div>
-          <div className="min-w-0">
-            <p className="text-[11px] sm:text-xs text-secondary font-medium truncate">Recovery Rate</p>
-            <h3 className="text-lg sm:text-xl font-bold mt-0.5 truncate">{recoveryRate}%</h3>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters and Main Content Container */}
-      <div className="bg-card border border-border-custom rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-xl space-y-4 w-full max-w-full box-border overflow-hidden">
-
-        {/* Search & Filters */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center w-full">
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-secondary" size={16} />
-            <input
-              type="text"
-              placeholder="Search ID, customer..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-input border border-border-custom text-primary rounded-xl sm:rounded-2xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-active transition-colors placeholder:text-secondary/50 box-border"
-            />
-          </div>
-
-          <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none w-full sm:w-auto">
-            {['All', 'Active', 'Abandoned', 'Converted'].map((status) => (
-              <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
-                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
-                  statusFilter === status
-                    ? 'bg-active text-primary'
-                    : 'bg-input text-secondary hover:text-primary hover:bg-disabled/40'
-                }`}
-              >
-                {status}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile View: Cards Layout / Desktop View: Traditional Table */}
-        <div className="w-full">
           
-          {/* Mobile Cards Layout (Visually active on screens < sm) */}
-          <div className="block sm:hidden space-y-3">
-            {loading ? (
-              Array.from({ length: 3 }).map((_, idx) => (
-                <div key={idx} className="bg-input/30 p-4 rounded-2xl border border-border-custom animate-pulse space-y-2">
-                  <div className="h-4 bg-input rounded w-24"></div>
-                  <div className="h-4 bg-input rounded w-32"></div>
-                </div>
-              ))
-            ) : filteredCarts.length === 0 ? (
-              <div className="text-center py-8 text-secondary text-sm">
-                {error || "No carts found."}
+            <div className="bg-card border border-border-custom p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center gap-3 sm:gap-4">
+              <div className="p-2.5 sm:p-3 bg-active/10 text-active rounded-xl sm:rounded-2xl">
+                <ShoppingCart size={22} />
               </div>
-            ) : (
-              filteredCarts.map((cart, index) => {
-                const displayId = cart._id || cart.id || `CART-${index + 1}`;
-                const totalPrice = Number(cart.total) || Number(cart.subtotal) || Number(cart.totalPrice) || 0;
-                const itemsCount = cart.itemCount || cart.items?.length || 0;
 
-                return (
-                  <div key={displayId} className="bg-card border border-border-custom rounded-2xl p-4 space-y-3 shadow-sm">
-                    <div className="flex justify-between items-center border-b border-border-custom/50 pb-2">
-                      <span className="font-mono text-xs font-bold text-primary">{displayId}</span>
-                      <span className={`px-2.5 py-0.5 rounded-xl text-[10px] font-semibold ${
-                        (cart.status || '').toLowerCase() === 'abandoned'
-                          ? 'bg-warning/10 text-warning border border-warning/20' 
-                          : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                      }`}>
-                        {cart.status || 'Active'}
-                      </span>
-                    </div>
+              <div>
+                <p className="text-[11px] sm:text-xs text-secondary font-medium">
+                  Total Items
+                </p>
 
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-active/20 text-active font-bold flex items-center justify-center text-xs shrink-0">
-                        {cart.user?.name?.charAt(0) || 'U'}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-primary font-medium text-xs truncate">{cart.user?.name || 'Customer'}</p>
-                        <p className="text-secondary text-[11px] truncate">{cart.user?.email || 'Active Cart'}</p>
-                      </div>
-                    </div>
+                <h3 className="text-lg sm:text-xl font-bold mt-0.5">
+                  {itemCount}
+                </h3>
+              </div>
+            </div>
 
-                    <div className="flex justify-between items-center text-xs pt-1">
-                      <span className="text-secondary">{itemsCount} items</span>
-                      <span className="font-bold text-primary">${totalPrice.toFixed(2)}</span>
-                    </div>
+          
+            <div className="bg-card border border-border-custom p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center gap-3 sm:gap-4">
+              <div className="p-2.5 sm:p-3 bg-emerald-500/10 text-emerald-400 rounded-xl sm:rounded-2xl">
+                <DollarSign size={22} />
+              </div>
 
-                    <div className="flex justify-between items-center pt-2 border-t border-border-custom/50">
-                      <span className="text-[11px] text-secondary">{cart.lastUpdated || 'Recently'}</span>
-                      <div className="flex items-center gap-2">
-                        {(cart.status || '').toLowerCase() === 'abandoned' && (
-                          <button 
-                            title="Send Recovery Email"
-                            className="p-1.5 bg-input hover:bg-warning/20 hover:text-warning rounded-lg transition-colors cursor-pointer"
-                          >
-                            <Mail size={14} />
-                          </button>
-                        )}
-                        <button 
-                          onClick={() => setSelectedCart(cart)}
-                          title="View Details"
-                          className="p-1.5 bg-input hover:bg-active/20 hover:text-active rounded-lg transition-colors cursor-pointer"
-                        >
-                          <Eye size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
+              <div>
+                <p className="text-[11px] sm:text-xs text-secondary font-medium">
+                  Subtotal
+                </p>
+
+                <h3 className="text-lg sm:text-xl font-bold mt-0.5">
+                  ${subtotal.toFixed(2)}
+                </h3>
+              </div>
+            </div>
+
+    
+            <div className="bg-card border border-border-custom p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center gap-3 sm:gap-4">
+              <div className="p-2.5 sm:p-3 bg-warning/10 text-warning rounded-xl sm:rounded-2xl">
+                <ShoppingBag size={22} />
+              </div>
+
+              <div>
+                <p className="text-[11px] sm:text-xs text-secondary font-medium">
+                  Discount
+                </p>
+
+                <h3 className="text-lg sm:text-xl font-bold mt-0.5">
+                  ${discountAmount.toFixed(2)}
+                </h3>
+              </div>
+            </div>
+
+    
+            <div className="bg-card border border-border-custom p-4 sm:p-5 rounded-2xl sm:rounded-3xl flex items-center gap-3 sm:gap-4">
+              <div className="p-2.5 sm:p-3 bg-purple-500/10 text-purple-400 rounded-xl sm:rounded-2xl">
+                <DollarSign size={22} />
+              </div>
+
+              <div>
+                <p className="text-[11px] sm:text-xs text-secondary font-medium">
+                  Total
+                </p>
+
+                <h3 className="text-lg sm:text-xl font-bold mt-0.5">
+                  ${total.toFixed(2)}
+                </h3>
+              </div>
+            </div>
           </div>
 
-          {/* Desktop Table View (Visible only on screens >= sm) */}
-          <div className="hidden sm:block max-h-[500px] overflow-y-auto border border-border-custom rounded-2xl">
-            <table className="w-full text-left text-sm text-secondary">
-              <thead className="bg-input text-xs uppercase tracking-wider text-secondary sticky top-0 z-10 border-b border-border-custom">
-                <tr>
-                  <th className="py-3.5 px-4 font-semibold">CART</th>
-                  <th className="py-3.5 px-4 font-semibold">CUSTOMER</th>
-                  <th className="py-3.5 px-4 font-semibold">ITEMS</th>
-                  <th className="py-3.5 px-4 font-semibold">TOTAL</th>
-                  <th className="py-3.5 px-4 font-semibold">STATUS</th>
-                  <th className="py-3.5 px-4 font-semibold">LAST ACTIVE</th>
-                  <th className="py-3.5 px-4 font-semibold text-right">ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border-custom">
-                {loading ? (
-                  Array.from({ length: 4 }).map((_, idx) => (
-                    <tr key={idx} className="animate-pulse">
-                      <td className="py-4 px-4"><div className="h-4 bg-input rounded w-20"></div></td>
-                      <td className="py-4 px-4"><div className="h-4 bg-input rounded w-32"></div></td>
-                      <td className="py-4 px-4"><div className="h-4 bg-input rounded w-16"></div></td>
-                      <td className="py-4 px-4"><div className="h-4 bg-input rounded w-16"></div></td>
-                      <td className="py-4 px-4"><div className="h-4 bg-input rounded w-20"></div></td>
-                      <td className="py-4 px-4"><div className="h-4 bg-input rounded w-24"></div></td>
-                      <td className="py-4 px-4 text-right"><div className="h-8 bg-input rounded-xl w-8 ml-auto"></div></td>
-                    </tr>
-                  ))
-                ) : filteredCarts.length === 0 ? (
+      
+          {coupon && (
+            <div className="bg-card border border-border-custom rounded-2xl sm:rounded-3xl p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-secondary">
+                  Applied Coupon
+                </span>
+
+                <span className="px-3 py-1 rounded-xl bg-active/10 text-active font-semibold text-sm">
+                  {coupon}
+                </span>
+              </div>
+            </div>
+          )}
+
+     
+          <div className="bg-card border border-border-custom rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-xl">
+
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-base sm:text-lg font-bold text-primary">
+                  Cart Items
+                </h2>
+
+                <p className="text-xs text-secondary mt-1">
+                  {items.length} products
+                </p>
+              </div>
+            </div>
+
+     
+            <div className="hidden sm:block overflow-x-auto border border-border-custom rounded-2xl">
+              <table className="w-full text-left text-sm">
+
+                <thead className="bg-input text-xs uppercase tracking-wider text-secondary">
                   <tr>
-                    <td colSpan="7" className="text-center py-12 text-secondary text-sm">
-                      {error || "No carts found."}
-                    </td>
+                    <th className="py-3.5 px-4">PRODUCT</th>
+                    <th className="py-3.5 px-4">PRICE</th>
+                    <th className="py-3.5 px-4">QUANTITY</th>
+                    <th className="py-3.5 px-4">TOTAL</th>
+                    <th className="py-3.5 px-4 text-right">ACTION</th>
                   </tr>
-                ) : (
-                  filteredCarts.map((cart, index) => {
-                    const displayId = cart._id || cart.id || `CART-${index + 1}`;
-                    const totalPrice = Number(cart.total) || Number(cart.subtotal) || Number(cart.totalPrice) || 0;
-                    const itemsCount = cart.itemCount || cart.items?.length || 0;
+                </thead>
+
+                <tbody className="divide-y divide-border-custom">
+
+                  {items.map((item, index) => {
+                    const price = Number(item.price) || 0;
+                    const quantity = Number(item.quantity) || 0;
+                    const itemTotal = price * quantity;
 
                     return (
-                      <tr key={displayId} className="hover:bg-input/30 transition-colors">
-                        <td className="py-4 px-4 font-mono text-xs font-bold text-primary whitespace-nowrap">{displayId}</td>
+                      <tr
+                        key={item._id || index}
+                        className="hover:bg-input/30 transition-colors"
+                      >
+
+                  
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-active/20 text-active font-bold flex items-center justify-center text-xs shrink-0">
-                              {cart.user?.name?.charAt(0) || 'U'}
+
+                            <img
+                              src={item.image || '/placeholder.png'}
+                              alt={item.name || 'Product'}
+                              className="w-12 h-12 rounded-xl object-cover bg-input"
+                            />
+
+                            <div>
+                              <p className="font-semibold text-primary">
+                                {item.name || 'Product'}
+                              </p>
+
+                              <p className="text-xs text-secondary">
+                                ID: {item.product || item._id || 'N/A'}
+                              </p>
                             </div>
-                            <div className="min-w-0">
-                              <p className="text-primary font-medium text-xs sm:text-sm truncate">{cart.user?.name || 'Customer'}</p>
-                              <p className="text-secondary text-[11px] truncate">{cart.user?.email || 'Active Cart'}</p>
-                            </div>
+
                           </div>
                         </td>
-                        <td className="py-4 px-4 font-medium text-primary whitespace-nowrap">{itemsCount} items</td>
-                        <td className="py-4 px-4 font-bold text-primary whitespace-nowrap">${totalPrice.toFixed(2)}</td>
-                        <td className="py-4 px-4 whitespace-nowrap">
-                          <span className={`px-3 py-1 rounded-xl text-[11px] font-semibold inline-block ${
-                            (cart.status || '').toLowerCase() === 'abandoned'
-                              ? 'bg-warning/10 text-warning border border-warning/20' 
-                              : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          }`}>
-                            {cart.status || 'Active'}
-                          </span>
+
+                   
+                        <td className="py-4 px-4 font-medium text-primary">
+                          ${price.toFixed(2)}
                         </td>
-                        <td className="py-4 px-4 text-xs whitespace-nowrap">{cart.lastUpdated || 'Recently'}</td>
-                        <td className="py-4 px-4 text-right whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-2">
-                            {(cart.status || '').toLowerCase() === 'abandoned' && (
-                              <button 
-                                title="Send Recovery Email"
-                                className="p-2 bg-input hover:bg-warning/20 hover:text-warning rounded-xl transition-colors cursor-pointer"
-                              >
-                                <Mail size={16} />
-                              </button>
-                            )}
-                            <button 
-                              onClick={() => setSelectedCart(cart)}
-                              title="View Details"
-                              className="p-2 bg-input hover:bg-active/20 hover:text-active rounded-xl transition-colors cursor-pointer"
-                            >
-                              <Eye size={16} />
-                            </button>
-                          </div>
+
+                        <td className="py-4 px-4 text-primary">
+                          {quantity}
                         </td>
+
+                      
+                        <td className="py-4 px-4 font-bold text-primary">
+                          ${itemTotal.toFixed(2)}
+                        </td>
+
+                  
+                        <td className="py-4 px-4 text-right">
+                          <button
+                            onClick={() => setSelectedCart(item)}
+                            title="View Details"
+                            className="p-2 bg-input hover:bg-active/20 hover:text-active rounded-xl transition-colors cursor-pointer"
+                          >
+                            <Eye size={16} />
+                          </button>
+                        </td>
+
                       </tr>
                     );
-                  })
-                )}
-              </tbody>
-            </table>
+                  })}
+
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile */}
+            <div className="block sm:hidden space-y-3">
+
+              {items.map((item, index) => {
+                const price = Number(item.price) || 0;
+                const quantity = Number(item.quantity) || 0;
+                const itemTotal = price * quantity;
+
+                return (
+                  <div
+                    key={item._id || index}
+                    className="bg-input/30 border border-border-custom rounded-2xl p-3"
+                  >
+
+                    <div className="flex gap-3">
+
+                      <img
+                        src={item.image || '/placeholder.png'}
+                        alt={item.name || 'Product'}
+                        className="w-16 h-16 rounded-xl object-cover bg-input shrink-0"
+                      />
+
+                      <div className="flex-1 min-w-0">
+
+                        <div className="flex justify-between gap-2">
+
+                          <div className="min-w-0">
+                            <p className="font-semibold text-primary text-sm truncate">
+                              {item.name || 'Product'}
+                            </p>
+
+                            <p className="text-xs text-secondary mt-1">
+                              Price: ${price.toFixed(2)}
+                            </p>
+
+                            <p className="text-xs text-secondary">
+                              Quantity: {quantity}
+                            </p>
+                          </div>
+
+                          <button
+                            onClick={() => setSelectedCart(item)}
+                            className="p-2 h-fit bg-input hover:bg-active/20 hover:text-active rounded-xl"
+                          >
+                            <Eye size={15} />
+                          </button>
+
+                        </div>
+
+                        <p className="font-bold text-primary mt-2">
+                          ${itemTotal.toFixed(2)}
+                        </p>
+
+                      </div>
+                    </div>
+
+                  </div>
+                );
+              })}
+
+            </div>
           </div>
 
-        </div>
-      </div>
+          {/* Summary */}
+          <div className="bg-card border border-border-custom rounded-2xl sm:rounded-3xl p-4 sm:p-5">
 
-      {/* Modal for Cart Details */}
+            <div className="max-w-md ml-auto space-y-3">
+
+              <div className="flex justify-between text-sm">
+                <span className="text-secondary">Subtotal</span>
+                <span className="font-semibold">
+                  ${subtotal.toFixed(2)}
+                </span>
+              </div>
+
+              <div className="flex justify-between text-sm">
+                <span className="text-secondary">Discount</span>
+                <span className="font-semibold text-warning">
+                  -${discountAmount.toFixed(2)}
+                </span>
+              </div>
+
+              {coupon && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-secondary">Coupon</span>
+                  <span className="font-semibold text-active">
+                    {coupon}
+                  </span>
+                </div>
+              )}
+
+              <div className="border-t border-border-custom pt-3 flex justify-between">
+                <span className="font-bold">Total</span>
+
+                <span className="text-lg font-bold">
+                  ${total.toFixed(2)}
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Empty */}
+      {!loading && !error && !cart && (
+        <div className="bg-card border border-border-custom rounded-2xl sm:rounded-3xl p-10 text-center">
+          <p className="text-secondary">No cart found.</p>
+        </div>
+      )}
+
+      {/* Product Details Modal */}
       {selectedCart && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-card border border-border-custom w-full max-w-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 space-y-4 sm:space-y-5 shadow-2xl relative max-h-[85vh] flex flex-col">
-            <button 
+
+          <div className="bg-card border border-border-custom w-full max-w-md rounded-2xl sm:rounded-3xl p-5 shadow-2xl relative">
+
+            <button
               onClick={() => setSelectedCart(null)}
-              className="absolute top-4 right-4 text-secondary hover:text-primary transition-colors cursor-pointer"
+              className="absolute top-4 right-4 text-secondary hover:text-primary"
             >
               <X size={20} />
             </button>
 
-            <div className="space-y-1 pr-6">
-              <h3 className="text-base sm:text-lg font-bold text-primary truncate">
-                Cart Details ({selectedCart._id || selectedCart.id || 'Cart'})
+            <div className="pr-8">
+              <h3 className="text-lg font-bold text-primary">
+                Product Details
               </h3>
-              <p className="text-xs text-secondary truncate">
-                Customer: {selectedCart.user?.name || 'Unknown User'}
+
+              <p className="text-sm text-secondary mt-1">
+                {selectedCart.name || 'Product'}
               </p>
             </div>
 
-            <div className="space-y-2.5 overflow-y-auto pr-1 flex-1">
-              {selectedCart.items?.map((item, idx) => {
-                const itemPrice = Number(item.price) || Number(item.product?.price) || 0;
-                const qty = Number(item.quantity) || 1;
-                return (
-                  <div key={idx} className="flex justify-between items-center p-2.5 sm:p-3 bg-input rounded-xl sm:rounded-2xl border border-border-custom text-xs">
-                    <div className="min-w-0 pr-2">
-                      <p className="font-semibold text-primary truncate">{item.name || item.product?.name || 'Product'}</p>
-                      <p className="text-secondary">Qty: {qty}</p>
-                    </div>
-                    <p className="font-bold text-primary shrink-0">${(itemPrice * qty).toFixed(2)}</p>
-                  </div>
-                );
-              })}
+            <div className="mt-5 space-y-3">
+
+              <div className="flex justify-between">
+                <span className="text-secondary">Price</span>
+                <span className="font-semibold">
+                  ${Number(selectedCart.price || 0).toFixed(2)}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-secondary">Quantity</span>
+                <span className="font-semibold">
+                  {selectedCart.quantity || 0}
+                </span>
+              </div>
+
+              <div className="flex justify-between border-t border-border-custom pt-3">
+                <span className="font-semibold">Total</span>
+                <span className="font-bold">
+                  $
+                  {(
+                    Number(selectedCart.price || 0) *
+                    Number(selectedCart.quantity || 0)
+                  ).toFixed(2)}
+                </span>
+              </div>
+
             </div>
 
-            <div className="border-t border-border-custom pt-3 flex justify-between items-center">
-              <span className="text-xs sm:text-sm font-semibold text-secondary">Total Value:</span>
-              <span className="text-base sm:text-lg font-bold text-primary">
-                ${(Number(selectedCart.total) || Number(selectedCart.subtotal) || Number(selectedCart.totalPrice) || 0).toFixed(2)}
-              </span>
-            </div>
-
-            <button 
+            <button
               onClick={() => setSelectedCart(null)}
-              className="w-full bg-active hover:bg-active-hover text-primary font-semibold py-2.5 sm:py-3 rounded-xl sm:rounded-2xl text-sm transition-colors cursor-pointer shrink-0"
+              className="w-full mt-5 bg-active hover:bg-active-hover text-primary font-semibold py-2.5 rounded-xl"
             >
               Close
             </button>
+
           </div>
         </div>
       )}
