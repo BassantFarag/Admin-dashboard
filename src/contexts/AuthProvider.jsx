@@ -3,11 +3,9 @@ import { login as loginApi, logout as logoutApi, authMe } from "../api/authApi";
 import AuthContext from "./AuthContext";
 const AuthProvider = ({ children }) => {
   const tokenStorage = localStorage.getItem("token");
-
   const [token, setToken] = useState(tokenStorage);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const fetchUser = async () => {
       if (token) {
@@ -60,7 +58,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, setUser, token, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

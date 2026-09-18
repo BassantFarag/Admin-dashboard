@@ -19,6 +19,8 @@ const AdminProfile = () => {
     avatar: "",
   });
 
+  const [nameField, setNameField] = useState("name");
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -30,8 +32,10 @@ const AdminProfile = () => {
       getUserById(currentUserId)
         .then((res) => {
           const userData = res.data?.user || res.data;
+          const field = "username" in userData ? "username" : "name";
+          setNameField(field);
           setFormData({
-            name: userData.name || "",
+            name: userData[field] || "",
             email: userData.email || "",
             phone: userData.phone || "",
             role: userData.role || "",
@@ -89,19 +93,19 @@ const AdminProfile = () => {
   setMessage({ type: "", text: "" });
 
   try {
-    let updatedUserData = { ...formData };
+    const { name, ...rest } = formData;
+    const payload = { ...rest, [nameField]: name };
+    let updatedUserData = payload;
 
     if (updateUser) {
-      const res = await updateUser(currentUserId, formData);
-      // إذا كان الـ API يرجع البيانات المحدثة مباشرة نأخذها منه
+      const res = await updateUser(currentUserId, payload);
       if (res?.data?.user) {
         updatedUserData = res.data.user;
       } else if (res?.data) {
-        updatedUserData = { ...formData, ...res.data };
+        updatedUserData = { ...payload, ...res.data };
       }
     }
 
-    // 1. تحديث الـ AuthContext مباشرة
     if (setUser) {
       setUser((prevUser) => ({
         ...prevUser,
@@ -109,7 +113,6 @@ const AdminProfile = () => {
       }));
     }
 
-    // 2. تحديث الـ LocalStorage بكافة المفاتيح المحتملة
     const existingUser = JSON.parse(localStorage.getItem("user") || "{}");
     const newUserData = { ...existingUser, ...updatedUserData };
     localStorage.setItem("user", JSON.stringify(newUserData));
